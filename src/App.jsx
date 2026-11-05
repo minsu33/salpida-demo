@@ -4,9 +4,13 @@ import { Mark } from "./ui.jsx";
 import * as S from "./screens.jsx";
 
 const KEY = "salpida-demo";
-const FRESH = { answers: {}, pass: null, alert: false, unread: false };
+const FRESH = { answers: {}, pass: null, alert: false, unread: false, onboarded: false };
+// 주소 끝에 ?reset 을 붙이면 처음 설치한 상태로 시연을 다시 시작한다
 const load = () => {
-  try { return { ...FRESH, ...JSON.parse(localStorage.getItem(KEY)) }; } catch { return FRESH; }
+  try {
+    if (new URLSearchParams(location.search).has("reset")) { localStorage.removeItem(KEY); history.replaceState(null, "", location.pathname); }
+    return { ...FRESH, ...JSON.parse(localStorage.getItem(KEY)) };
+  } catch { return FRESH; }
 };
 
 // PC에서는 폰 틀을 창 높이에 맞춰 줄인다
@@ -28,8 +32,9 @@ function useFit(ref) {
 }
 
 export default function App() {
-  const [stack, setStack] = useState([{ name: "onboarding" }]);
   const [state, setState] = useState(load);
+  // 온보딩은 처음 한 번만. 다음부터는 로고만 잠깐 보이고 지도로 간다
+  const [stack, setStack] = useState(() => [{ name: state.onboarded ? "splash" : "onboarding" }]);
   const [shopId, setShopId] = useState("bodyfit");
   const [push, setPush] = useState(null); // null | "in" | "out"
   const [toast, setToast] = useState(null);
@@ -53,7 +58,7 @@ export default function App() {
   };
 
   const actions = {
-    start: () => { timers.current.forEach(clearTimeout); setState(FRESH); setShopId("bodyfit"); setPush(null); nav.tab("map"); },
+    start: () => { timers.current.forEach(clearTimeout); setState({ ...FRESH, onboarded: true }); setShopId("bodyfit"); setPush(null); nav.tab("map"); },
     openShop: (id) => { setShopId(id); nav.go("detail"); },
     answer: (id, v) => setState((s) => ({ ...s, answers: { ...s.answers, [id]: v } })),
     copy: (text) => { navigator.clipboard?.writeText(text).catch(() => {}); say("문구를 복사했어요"); },

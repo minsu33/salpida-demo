@@ -55,3 +55,32 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* 토스트 */
 .toast { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); z-index: 40; background: rgba(25, 31, 40, .92); color: #fff; font-size: 15px; font-weight: 600; padding: 12px 18px; border-radius: 14px; white-space: nowrap; animation: fade 2.2s ease both; }
 @keyframes fade { 0% { opacity: 0; transform: translate(-50%, 8px); } 12%, 80% { opacity: 1; transform: translate(-50%, 0); } 100% { opacity: 0; } }
+
+/* 온보딩 */
+.splash { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+.splash-mark { animation: pop .6s cubic-bezier(.2, .9, .3, 1.3) both; }
+.splash-word { display: flex; align-items: baseline; gap: 4px; font-size: 34px; font-weight: 800; letter-spacing: -1px; animation: in .5s .25s ease both; }
+.splash-word span { width: 9px; height: 9px; border-radius: 50%; background: var(--acc); display: inline-block; }
+@keyframes pop { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
+.skip { position: absolute; top: max(62px, calc(env(safe-area-inset-top) + 8px)); right: 22px; z-index: 5; font-size: 15px; font-weight: 600; color: var(--ter); cursor: pointer; }
+.ob-view { position: absolute; left: 0; right: 0; top: 0; bottom: 150px; overflow: hidden; touch-action: pan-y; }
+.ob-track { display: flex; height: 100%; transition: transform .38s cubic-bezier(.2, .8, .2, 1); }
+.ob-slide { flex: 0 0 100%; display: flex; flex-direction: column; }
+.ob-art { flex: 1; min-height: 0; margin: 100px 20px 34px; border-radius: 28px; background: var(--acc-soft); display: flex; align-items: center; justify-content: center; }
+.art-card { width: 300px; padding: 18px; border-radius: 20px; background: #fff; box-shadow: 0 12px 30px rgba(194, 87, 26, .12); animation: in .45s ease both; }
+.art-card .tier { margin-top: 12px; }
+.grow { animation: grow .7s .15s cubic-bezier(.2, .8, .2, 1) both; transform-origin: left; }
+@keyframes grow { from { transform: scaleX(0); } to { transform: none; } }
+.art-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); animation: in .4s ease both; }
+.art-row:last-child { border-bottom: 0; }
+.art-push { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border-radius: 18px; background: rgba(255, 255, 255, .96); box-shadow: 0 12px 30px rgba(0, 0, 0, .12); animation: drop .6s .1s cubic-bezier(.2, .9, .3, 1.2) both; }
+.art-push .appic { width: 32px; height: 32px; border-radius: 8px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); display: flex; align-items: center; justify-content: center; flex: none; }
+.dots i { transition: all .25s; }
+.sys-dim { position: absolute; inset: 0; z-index: 60; background: rgba(0, 0, 0, .35); display: flex; align-items: center; justify-content: center; animation: fadein .2s ease both; }
+@keyframes fadein { from { opacity: 0; } }
+.sys { width: 270px; border-radius: 14px; background: rgba(242, 242, 247, .97); text-align: center; overflow: hidden; animation: pop .25s ease both; }
+.sys b { display: block; font-size: 16px; padding: 20px 16px 4px; }
+.sys p { margin: 0; font-size: 13px; line-height: 1.45; padding: 0 16px 18px; color: #3C3C43; }
+.sys-btns { display: flex; border-top: 1px solid rgba(60, 60, 67, .25); }
+.sys-btns span { flex: 1; padding: 12px 0; font-size: 16px; color: #0A84FF; cursor: pointer; }
+.sys-btns span + span { border-left: 1px solid rgba(60, 60, 67, .25); }
