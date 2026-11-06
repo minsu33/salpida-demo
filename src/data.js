@@ -33,7 +33,7 @@ export const man = (n) => `${+(n / 10000).toFixed(1)}만`;
 
 export const ALERT_TEXT = {
   signal: {
-    tag: "참고 신호", title: "사장님 글이 3개월째 올라오지 않았어요",
+    tag: "참고 신호", title: "사장님 글이 3개월째 없어요",
     body: "문을 닫는다는 뜻은 아니에요.",
   },
   closed: {
