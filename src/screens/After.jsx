@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { PASS, PROTECT, ALERT_TEXT, RECORD, won, remain, held, canObject } from "../data.js";
+import { PASS, PROTECT, ALERT_TEXT, RECORD, won, remain, held, canObject, refundIfQuit } from "../data.js";
 import { Icon, I, Status, Back, Tab, Mark, md } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
@@ -77,8 +77,8 @@ export function Alerts({ nav, ui }) {
                 <div className="abtns" onClick={(e) => e.stopPropagation()}>
                   {a.kind === "signal" ? <>
                     <button onClick={() => nav.tab("pass")}>남은 기간 보기</button>
-                    <button className="on" onClick={() => ui.copy("요즘 운영은 계속 정상으로 하시나요? 다음 달 일정도 알 수 있을까요?")}>업장에 물어보기</button>
-                  </> : <button className="on" onClick={() => open(a)}>지금 할 일 보기</button>}
+                    <button className="on" onClick={() => open(a)}>지금 할 일 보기</button>
+                  </> : <button className="on" onClick={() => open(a)}>{p?.pay?.method === "안심결제" ? "환불 보기" : "지금 할 일 보기"}</button>}
                 </div>
               </motion.div>
             );
@@ -104,7 +104,7 @@ export function Alert({ nav, ui, params }) {
   const left = won(remain(p.daysLeft, p.pay?.amount));
   const todos = a.kind === "signal" ? [
     { t: "남은 돈 확인", s: `약 ${left}`, act: "이용권 보기", fn: () => nav.tab("pass") },
-    { t: "업장에 운영 물어보기", s: "다음 달 일정 확인", act: "문구 복사", fn: () => ui.copy("요즘 운영은 계속 정상으로 하시나요? 다음 달 일정도 알 수 있을까요?") },
+    { t: "지금 그만두면 받는 돈", s: `약 ${won(refundIfQuit(p.pay?.amount || PASS.price, PASS.days - p.daysLeft))} · 소비자분쟁해결기준`, act: "계산 보기", fn: () => ui.toast("쓴 기간 이용료와 위약금 10%를 뺀 금액이에요") },
     { t: canObject(p.pay) ? "할부라 안심" : "영수증 챙기기", s: canObject(p.pay) ? "닫으면 할부 멈춤 가능" : "피해구제에 필요", act: "자세히", fn: () => ui.toast("20만 원 이상, 3개월 이상 할부면 남은 할부를 멈출 수 있어요") },
   ] : [
     canObject(p.pay) && { t: "카드사에 할부 멈춤 요청", s: canObject(p.pay) ? `${p.pay.months}개월 할부 · 할부거래법` : "대상 아님 · 건너뛰기", act: "요청 문구 복사", fn: () => ui.copy(`${p.shop.name}이 폐업해 이용권을 쓸 수 없게 되어, 남은 할부금 지급 거절(항변권)을 요청합니다.`) },
@@ -118,14 +118,22 @@ export function Alert({ nav, ui, params }) {
         <div className="pad">
           <span className={`tagc ${a.kind}`}>{t.tag}</span>
           <div className="t26" style={{ marginTop: 12 }}>{p.shop.name}<br />{t.title}</div>
-          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? `${won(held(p.daysLeft, p.pay?.amount))}은 자동 환불돼요. 나머지 ${Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) - Math.round(held(p.daysLeft, p.pay?.amount) / 1e4)}만 원은 업장이 이미 받은 돈이에요.` : t.body}</div>
+          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? "남은 이용료의 절반이 자동으로 돌아와요." : t.body}</div>
         </div>
         {a.kind === "closed" && p.pay?.method === "안심결제" ? (
           <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <span>자동으로 돌려받는 돈</span>
             <b>{won(held(p.daysLeft, p.pay?.amount))}</b>
-            <span>결제한 카드로 환불</span>
-            {canObject(p.pay) && <button className="actbtn" style={{ alignSelf: "flex-start", marginTop: 8 }} onClick={() => ui.copy(`${p.shop.name}이 폐업해 남은 할부금 지급 거절(항변권)을 요청합니다.`)}>남은 할부 멈추기</button>}
+            <div className="rsplit">
+              <div className="h"><i /><span>돌려받음 {won(held(p.daysLeft, p.pay?.amount))}</span></div>
+              <div className="g"><i /><span>업장이 받아 간 돈 {Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) - Math.round(held(p.daysLeft, p.pay?.amount) / 1e4)}만 원</span></div>
+            </div>
+            <div className="t13 sub">남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))} 기준</div>
+            <div className="rsteps">{["폐업 확인", "업장에 보내던 돈 멈춤", "결제한 카드로 환불"].map((x, i) => <div key={x} className={i < 2 ? "done" : "now"}><i>{i < 2 ? "✓" : ""}</i>{x}</div>)}</div>
+            {canObject(p.pay) && <>
+              <div className="t14" style={{ marginTop: 6, lineHeight: 1.5 }}>할부로 냈다면, 업장이 받아 간 돈 중 <span className="acc b7" style={{ display: "inline" }}>아직 안 낸 할부</span>는 멈출 수 있어요</div>
+              <button className="actbtn" style={{ alignSelf: "flex-start" }} onClick={() => ui.copy(`${p.shop.name}이 폐업해 남은 할부금 지급 거절(항변권)을 요청합니다.`)}>카드사 요청 문구 복사</button>
+            </>}
           </motion.div>
         ) : (<>
         {a.kind === "signal" && (

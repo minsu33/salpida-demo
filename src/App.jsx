@@ -54,12 +54,15 @@ function Shell() {
     dispatch({ type: "alert", kind, id }); setPush({ kind, id });
     later(() => setPush(null), 6500);
   };
-  // 시연용으로 3개월을 몇 초로 줄인다: 등록 → '3개월 뒤' → 참고 신호 알림
+  // 시연용 시간 건너뛰기: 등록 → '2개월 뒤' 참고 신호(앱 안에만) → '1개월 뒤' 폐업 푸시. 한꺼번에 오지 않게 나눈다.
   // 참고 신호는 헛경보가 많아 푸시하지 않고 앱 안에만 쌓는다. 푸시는 인허가 폐업 같은 사실에만.
   const timeSkip = () => {
-    setSkip(true);
-    later(() => { dispatch({ type: "skip" }); dispatch({ type: "alert", kind: "signal", id: Date.now() - 1 }); }, 700);
-    later(() => { setSkip(false); sendAlert("closed"); }, 1700);
+    setSkip("2개월 뒤");
+    later(() => { dispatch({ type: "skip", days: 60 }); dispatch({ type: "alert", kind: "signal", id: Date.now() - 1 }); }, 700);
+    later(() => { setSkip(false); say("참고 신호가 생겼어요 · 알림 탭에서 볼 수 있어요"); }, 1700);
+    later(() => setSkip("1개월 뒤"), 7700);
+    later(() => dispatch({ type: "skip", days: 30 }), 8400);
+    later(() => { setSkip(false); sendAlert("closed"); }, 9400);
   };
 
   const ui = {
@@ -133,7 +136,7 @@ function Shell() {
             <AnimatePresence>
               {skip && (
                 <motion.div className="skipper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                  <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.15 } }}>3개월 뒤</motion.div>
+                  <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.15 } }}>{skip}</motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
