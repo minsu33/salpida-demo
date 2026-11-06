@@ -42,7 +42,7 @@ export function Detail({ nav }) {
                 {Object.entries(TIERS).map(([k, v]) => (
                   <div key={k} className={`tier ${k === shop.tier ? "mine" : ""}`}>
                     <span>{v.label}</span>
-                    <div className="bar"><i className="grow" style={{ width: `${v.bar}%`, background: k === shop.tier ? "#191F28" : "#C9CED4" }} /></div>
+                    <div className="bar"><i className="grow" style={{ width: `${v.bar}%`, background: k === shop.tier ? "#C2571A" : "#C9CED4" }} /></div>
                     <b>{k === shop.tier ? "이 업장" : v.tag}</b>
                   </div>
                 ))}
@@ -54,7 +54,7 @@ export function Detail({ nav }) {
               <div className="t14 sub b7">업장이 가입한 보장</div>
               {shop.guard ? (
                 <div className="guard" style={{ marginTop: 8 }}>
-                  <Icon d={I.shield} size={22} color="#191F28" />
+                  <Icon d={I.shield} size={22} color="#C2571A" />
                   <div style={{ flex: 1 }}><b>보장 업장</b><span>문을 닫아도 남은 이용료를 돌려받아요</span></div>
                 </div>
               ) : (

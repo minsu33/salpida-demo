@@ -28,7 +28,7 @@ export function Check({ nav }) {
                 const on = state.answers[c.id] === v;
                 return (
                   <motion.button key={v} whileTap={{ scale: 0.96 }} className={on ? "on" : ""} onClick={() => dispatch({ type: "answer", id: c.id, v })}>
-                    {on && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ display: "inline-flex" }}><Icon d={I.check} size={14} color="#fff" w={3} /></motion.span>}{v}
+                    {on && <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ display: "inline-flex" }}><Icon d={I.check} size={14} color="#C2571A" w={3} /></motion.span>}{v}
                   </motion.button>
                 );
               })}
@@ -37,7 +37,7 @@ export function Check({ nav }) {
         ))}
       </div>
       <div className="bottom">
-        <motion.button className={`btn ${done ? "" : "off"}`} style={{ flex: 1 }} animate={done ? { scale: [1, 1.03, 1] } : {}} onClick={() => nav.go("result")}>{done ? "결과 보기" : "세 가지를 골라 주세요"}</motion.button>
+        <motion.button className={`btn ${done ? "acc-b" : "off"}`} style={{ flex: 1 }} animate={done ? { scale: [1, 1.03, 1] } : {}} onClick={() => nav.go("result")}>{done ? "결과 보기" : "세 가지를 골라 주세요"}</motion.button>
       </div>
     </div>
   );
@@ -80,8 +80,8 @@ export function Result({ nav, ui }) {
         <div className="pad" style={{ marginTop: 26 }}>
           <div className="t14 sub b7">업장이 가입한 보장</div>
           {shop.guard ? (
-            <div className="key" style={{ margin: "8px 0 0", background: "var(--card)" }}>
-              <div className="row"><b className="t16" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Icon d={I.shield} size={18} color="#191F28" />보장 업장</b><span className="chipg" style={{ background: "#fff" }}>OO보증보험</span></div>
+            <div className="key" style={{ margin: "8px 0 0", background: "var(--acc-soft)" }}>
+              <div className="row"><b className="t16 acc" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Icon d={I.shield} size={18} color="#C2571A" />보장 업장</b><span className="chipg" style={{ background: "#fff" }}>OO보증보험</span></div>
               <div className="t13 ter" style={{ marginTop: 14 }}>내가 더 내는 돈</div>
               <div className="t40" style={{ whiteSpace: "nowrap" }}>0원</div>
               <div className="t14 sub" style={{ marginTop: 4, lineHeight: 1.5 }}>보장료는 업장이 내요. 문을 닫으면 남은 이용료를 돌려받아요.</div>

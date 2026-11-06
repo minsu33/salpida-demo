@@ -48,7 +48,7 @@ export const Tab = ({ active, go, unread }) => (
   <div className="tab">
     {TABS.map((t) => (
       <button key={t.id} className={active === t.id ? "on" : ""} onClick={() => go(t.id)}>
-        <Icon d={t.d} size={24} color={active === t.id ? "#191F28" : "#8B95A1"} />
+        <Icon d={t.d} size={24} color={active === t.id ? "#C2571A" : "#8B95A1"} />
         {t.label}
         {t.id === "alerts" && unread > 0 && <span className="badge">{unread}</span>}
       </button>

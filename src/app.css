@@ -145,7 +145,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .ob-view { position: absolute; left: 0; right: 0; top: 0; bottom: 150px; overflow: hidden; touch-action: pan-y; }
 .ob-track { display: flex; height: 100%; transition: transform .38s cubic-bezier(.2, .8, .2, 1); }
 .ob-slide { flex: 0 0 100%; display: flex; flex-direction: column; }
-.ob-art { flex: 1; min-height: 0; margin: 100px 20px 34px; border-radius: 28px; background: var(--card); display: flex; align-items: center; justify-content: center; }
+.ob-art { flex: 1; min-height: 0; margin: 100px 20px 34px; border-radius: 28px; background: var(--acc-soft); display: flex; align-items: center; justify-content: center; }
 .art-card { width: 300px; padding: 18px; border-radius: 20px; background: #fff; box-shadow: 0 12px 30px rgba(25, 31, 40, .08); animation: fadein .45s ease both; }
 .art-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); animation: fadein .4s ease both; }
 .art-row:last-child { border-bottom: 0; }
@@ -168,3 +168,22 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .mk.on .mk-dot { width: 32px; height: 32px; border-radius: 16px; background: var(--ink); }
 .mk.on .mk-dot i { background: #fff; }
 .mk.on .mk-name { font-size: 13px; }
+
+/* 포인트 색: 브랜드 주황을 '선택·내 것·핵심 행동'에 쓴다. 바탕은 연한 주황. */
+.tab button.on { color: var(--acc); }
+.mk.on .mk-dot { background: var(--acc); box-shadow: 0 3px 10px rgba(194, 87, 26, .45); }
+.mk.on .mk-name { color: var(--acc); }
+.chip.on.guardf { background: var(--acc-soft); color: var(--acc); box-shadow: inset 0 0 0 1.5px var(--acc), 0 1px 6px rgba(0, 0, 0, .12); }
+.chipg.dark { background: var(--acc-soft); color: var(--acc); }
+.tier.mine span:first-child, .tier.mine b { color: var(--acc); font-weight: 700; }
+.seg3 button.on { background: #fff; color: var(--acc); box-shadow: inset 0 0 0 2px var(--acc); }
+.pass .p i { background: var(--acc); }
+.status i { background: #12B886; box-shadow: 0 0 0 4px rgba(18, 184, 134, .16); }
+.todo3 i, .cq span { background: var(--acc); }
+.actbtn { background: var(--acc-soft); color: var(--acc); }
+.nearby { display: block; width: 100%; text-align: left; font-size: 14px; font-weight: 600; color: var(--sub); padding: 0 0 12px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+.nearby::after { content: " ›"; }
+.lrow { display: flex; width: 100%; align-items: center; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.lrow:active { background: #FAFAFB; }
+.guard:not(.none) { background: var(--acc-soft); }
+.guard:not(.none) b { color: var(--acc); }

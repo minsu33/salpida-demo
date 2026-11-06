@@ -15,7 +15,7 @@ function Art({ i }) {
     <div className="art-card">
       <div className="row"><b style={{ fontSize: 16 }}>○○피트니스 F점</b><span className="chipg">작은 편 · 약 28평</span></div>
       {Object.entries(TIERS).map(([k, v]) => (
-        <div key={k} className={`tier ${k === "small" ? "mine" : ""}`}><span>{v.label}</span><div className="bar"><i className="grow" style={{ width: `${v.bar}%`, background: k === "small" ? "#191F28" : "#B0B8C1" }} /></div><b>{v.tag}</b></div>
+        <div key={k} className={`tier ${k === "small" ? "mine" : ""}`}><span>{v.label}</span><div className="bar"><i className="grow" style={{ width: `${v.bar}%`, background: k === "small" ? "#C2571A" : "#B0B8C1" }} /></div><b>{v.tag}</b></div>
       ))}
     </div>
   );
