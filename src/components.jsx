@@ -51,7 +51,11 @@ export const CATS = [
 export const Status = ({ dark, onSecret }) => (
   <div className="sb" style={dark ? { color: "#fff" } : undefined} onClick={onSecret}>
     <span>9:41</span>
-    <span><i style={{ width: 3, height: 6 }} /><i style={{ width: 3, height: 9 }} /><i style={{ width: 3, height: 12 }} /><span className="bat" /></span>
+    <span className="sbr">
+      <span className="sig">{[4, 6.5, 9, 11.5].map((h) => <i key={h} style={{ height: h }} />)}</span>
+      <svg width="17" height="12" viewBox="0 0 16 12" aria-hidden><path fill="currentColor" d="M8 11.6 5.6 9.2a3.4 3.4 0 0 1 4.8 0zM8 0C5 0 2.3 1.2.3 3.2l1.6 1.6C3.5 3.2 5.6 2.3 8 2.3s4.5.9 6.1 2.5l1.6-1.6C13.7 1.2 11 0 8 0zm0 4.6c-1.7 0-3.3.7-4.4 1.8l1.6 1.6c.7-.7 1.7-1.1 2.8-1.1s2.1.4 2.8 1.1l1.6-1.6C11.3 5.3 9.7 4.6 8 4.6z" /></svg>
+      <span className="bat" />
+    </span>
   </div>
 );
 

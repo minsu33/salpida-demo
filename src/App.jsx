@@ -102,6 +102,8 @@ function Shell() {
     <div className="stage">
       <div className="fit">
         <div className="device" ref={device}>
+          <div className="island" aria-hidden />
+          <div className="homebar" aria-hidden />
           <div className="s">
             {leaving && (
               <motion.div key={"out" + leaving.key} className="screen" custom={leaving.dir} variants={slide} initial="center" animate="exit" style={{ pointerEvents: "none" }}>
