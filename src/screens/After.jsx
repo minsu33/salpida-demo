@@ -70,11 +70,17 @@ export function Alerts({ nav, ui }) {
           {state.alerts.map((a) => {
             const t = ALERT_TEXT[a.kind];
             return (
-              <motion.button key={a.id} className={`acard ${a.kind}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} onClick={() => open(a)}>
+              <motion.div key={a.id} className={`acard ${a.kind}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} onClick={() => open(a)}>
                 <div className="row"><span className={`tagc ${a.kind}`}>{t.tag}</span>{!a.read && <i className="dot-new" />}</div>
-                <div className="t18 b7" style={{ marginTop: 10, textAlign: "left" }}>{p?.shop.name} {t.title}</div>
-                <div className="t14 acc b7" style={{ marginTop: 10, textAlign: "left" }}>할 일 보기 ›</div>
-              </motion.button>
+                <div className="t18 b7" style={{ marginTop: 10 }}>{p?.shop.name}<br />{t.title}</div>
+                <div className="t13 sub" style={{ marginTop: 6 }}>{t.body}</div>
+                <div className="abtns" onClick={(e) => e.stopPropagation()}>
+                  {a.kind === "signal" ? <>
+                    <button onClick={() => nav.tab("pass")}>남은 기간 보기</button>
+                    <button className="on" onClick={() => ui.copy("요즘 운영은 계속 정상으로 하시나요? 다음 달 일정도 알 수 있을까요?")}>업장에 물어보기</button>
+                  </> : <button className="on" onClick={() => open(a)}>지금 할 일 보기</button>}
+                </div>
+              </motion.div>
             );
           })}
           {p && <div className="t14 ter b7" style={{ marginTop: 22 }}>지난 기록</div>}

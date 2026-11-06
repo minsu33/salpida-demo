@@ -261,3 +261,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .ifclose span { font-size: 14px; font-weight: 700; color: var(--sub); }
 .ifclose b { display: flex; align-items: center; gap: 8px; font-size: 19px; color: var(--acc); }
 .ifclose.bad { background: var(--card); } .ifclose.bad b { color: var(--sub); }
+.acard { cursor: pointer; }
+.acard.signal { background: var(--acc-soft); }
+.abtns { display: flex; gap: 8px; margin-top: 14px; }
+.abtns button { flex: 1; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: #fff; font-size: 14px; font-weight: 700; color: var(--ink); }
+.abtns button.on { background: var(--acc); color: #fff; }
