@@ -2,3 +2,8 @@ node_modules
 dist
 .DS_Store
 .env*
+
+# 작업용 지침·참고 자료는 로컬에만
+CLAUDE.md
+docs/guides/
+docs/회의록_*.md
