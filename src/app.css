@@ -269,3 +269,4 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .key.sig { background: var(--acc-soft); }
 .key.sig .bars i:not(.zero) { background: #D9C2B3; }
 .todo > i { background: var(--acc-soft); color: var(--acc); }
+.cardpay { width: 180px; height: 180px; margin: 26px auto 0; border-radius: 24px; background: var(--card); display: flex; align-items: center; justify-content: center; }

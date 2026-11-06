@@ -17,9 +17,9 @@ export const PASS = { name: "12개월권", price: 600000, days: 365, daysLeft: 3
 export const SKIP_DAYS = 90; // 시연에서 '3개월 뒤'로 넘기는 날 수
 
 export const won = (n) => `${Math.round(n / 10000)}만 원`;
-export const remain = (daysLeft) => PASS.price * Math.max(0, daysLeft) / PASS.days;
+export const remain = (daysLeft, price = PASS.price) => price * Math.max(0, daysLeft) / PASS.days;
 // 안심결제: 절반은 업장에 바로, 절반은 결제대행사가 맡아 매달 정산 → 닫히면 아직 안 보낸 몫이 돌아온다
-export const held = (daysLeft) => remain(daysLeft) * 0.5;
+export const held = (daysLeft, price = PASS.price) => remain(daysLeft, price) * 0.5;
 // 중도 해지 시 환급 (소비자분쟁해결기준: 쓴 기간 이용료 + 총액의 10% 위약금 공제)
 export const refundIfQuit = (price, usedDays) => Math.max(0, price - (price * usedDays) / PASS.days - price * 0.1);
 // 업장이 고른 '돈 지키는 수단'. 안심결제: 결제대행사가 맡아 매달 나눠 정산 / 보증보험: 닫으면 보험사가 환급 (시연용 가정)

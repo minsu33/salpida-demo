@@ -50,8 +50,8 @@ export function Pay({ nav, ui }) {
   const method = es ? "안심결제" : months ? "할부" : "일시불";
   const pay = { method, months, amount, date: new Date().toISOString().slice(0, 10) };
   const stop = canObject(pay);
-  const lines = [es && `보관된 ${man(amount / 2)} 원 자동 환불`, stop && "남은 할부 멈춤"].filter(Boolean);
-  const submit = () => { if (es) return nav.go("qr", { pay }); dispatch({ type: "register", pay }); ui.registered(); };
+  const lines = [es && `보관된 돈 자동 환불 (최대 ${man(amount / 2)} 원)`, stop && "남은 할부 멈춤"].filter(Boolean);
+  const submit = () => nav.go("qr", { pay });
   return (
     <div className="s">
       <div className="scroll">
@@ -72,10 +72,10 @@ export function Pay({ nav, ui }) {
         </div>
         <motion.div key={lines.join()} className={`ifclose ${lines.length ? "" : "bad"}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
           <span>닫히면 내 돈은?</span>
-          {lines.length ? lines.map((l) => <b key={l}><Icon d={I.check} size={18} color="#C2571A" w={2.8} />{l}</b>) : <b>돌려받기 어려워요</b>}
+          {lines.length ? lines.map((l) => <b key={l}><Icon d={I.check} size={18} color="#C2571A" w={2.8} />{l}</b>) : <b>{months && amount < 200000 ? "20만 원 미만은 할부 멈춤이 안 돼요" : "돌려받기 어려워요"}</b>}
         </motion.div>
       </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? "안심결제로 결제하기" : "결제하고 등록하기"}</button></div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? "안심결제로 결제하기" : "카운터에서 결제하기"}</button></div>
     </div>
   );
 }
@@ -95,21 +95,24 @@ const QR = Array.from({ length: 441 }, (_, i) => { const x = i % 21, y = (i / 21
 export function Qr({ nav, ui, params }) {
   const { state, dispatch } = useStore();
   const pay = params.pay;
+  const es = pay.method === "안심결제";
   const done = () => { dispatch({ type: "register", pay }); ui.registered(); };
+  const card = pay.months ? `카드 ${pay.months}개월` : "카드 일시불";
   return (
     <div className="s">
       <div className="scroll">
         <Status /><Back onBack={nav.back} />
-        <div className="pad"><div className="t26">직원에게 보여 주세요</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {won(pay.amount)}</div></div>
-        <div className="qr">{QR.map((on, i) => <i key={i} className={on ? "on" : ""} />)}</div>
+        <div className="pad"><div className="t26">{es ? "직원에게 보여 주세요" : "카운터에서 카드로 내세요"}</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {won(pay.amount)}</div></div>
+        {es ? <div className="qr">{QR.map((on, i) => <i key={i} className={on ? "on" : ""} />)}</div>
+          : <div className="cardpay"><Icon d={I.card} size={64} color="#191F28" w={1.6} /></div>}
         <div className="steps">
-          {[["phone", "화면 보여 주기"], ["card", pay.months ? `카드 ${pay.months}개월` : "카드 일시불"], ["shield", "안심결제"]].map(([ic, t], i) => (
+          {(es ? [["phone", "화면 보여 주기"], ["card", card], ["shield", "안심결제"]] : [["card", card], ["doc", "결제 기록"], ["bell", "폐업 알림"]]).map(([ic, t], i) => (
             <div key={t} className="step"><span><Icon d={I[ic]} size={22} color={i === 2 ? "#C2571A" : "#191F28"} /></span><b>{t}</b></div>
           ))}
         </div>
-        <div className="pad"><Split amount={pay.amount} /></div>
-              </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={done}>결제 완료</button></div>
+        {es && <div className="pad"><Split amount={pay.amount} /></div>}
+      </div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={done}>{es ? "결제 완료" : "결제했어요, 등록하기"}</button></div>
     </div>
   );
 }
