@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ALERT_TEXT } from "./data.js";
+import { ALERT_TEXT, won, held } from "./data.js";
 import { Mark } from "./components.jsx";
 import { StoreProvider, useStore } from "./lib/store.jsx";
 import { useStackNav } from "./lib/nav.js";
@@ -119,8 +119,10 @@ function Shell() {
                   <div className="appic"><Mark size={30} /></div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="row t14"><b>살피다</b><span className="ter t13">지금</span></div>
-                    <div className="t15 b7" style={{ marginTop: 3 }}>{pushShop.name} · {ALERT_TEXT[push.kind].tag}</div>
-                    <div className="t14 sub" style={{ marginTop: 2 }}>{ALERT_TEXT[push.kind].title}</div>
+                    <div className="t15 b7" style={{ marginTop: 3 }}>{pushShop.name} {push.kind === "closed" ? "폐업이 등록됐어요" : ALERT_TEXT[push.kind].title}</div>
+                    {push.kind === "closed" && state.pass?.pay?.method === "안심결제"
+                      ? <div className="t14 acc b7" style={{ marginTop: 2 }}>보관된 {won(held(state.pass.daysLeft))} 자동 환불</div>
+                      : <div className="t14 sub" style={{ marginTop: 2 }}>{ALERT_TEXT[push.kind].tag}</div>}
                   </div>
                 </motion.div>
               )}
