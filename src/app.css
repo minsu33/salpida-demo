@@ -238,3 +238,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* 고른 핀 이름표: 흰 말풍선으로 다른 핀 위에 */
 .mk.on .mk-name { background: #fff; padding: 3px 9px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, .18); text-shadow: none; }
 .fact > span { width: 110px; word-break: keep-all; }
+.refund { margin: 26px 20px 0; padding: 22px 20px; border-radius: 18px; background: var(--acc-soft); display: flex; flex-direction: column; gap: 6px; }
+.refund b { font-size: 40px; color: var(--acc); letter-spacing: -1px; }
+.refund span { font-size: 14px; color: var(--sub); } .refund span:first-child { font-weight: 700; color: var(--ink); }

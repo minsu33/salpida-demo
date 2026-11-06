@@ -20,6 +20,11 @@ export const won = (n) => `${Math.round(n / 10000)}만 원`;
 export const remain = (daysLeft) => PASS.price * Math.max(0, daysLeft) / PASS.days;
 // 중도 해지 시 환급 (소비자분쟁해결기준: 쓴 기간 이용료 + 총액의 10% 위약금 공제)
 export const refundIfQuit = (price, usedDays) => Math.max(0, price - (price * usedDays) / PASS.days - price * 0.1);
+// 업장이 고른 '돈 지키는 수단'. 안심결제: 결제대행사가 맡아 매달 나눠 정산 / 보증보험: 닫으면 보험사가 환급 (시연용 가정)
+export const PROTECT = {
+  escrow: { name: "안심결제", short: "매달 나눠 정산", body: "닫히면 남은 돈 자동 환불" },
+  insurance: { name: "보증보험", short: "보험사 가입", body: "닫히면 보험사가 환급" },
+};
 // 할부 항변: 20만 원 이상, 3개월 이상 신용카드 할부
 export const canObject = (pay) => !!pay && pay.method === "할부" && pay.amount >= 200000 && pay.months >= 3;
 

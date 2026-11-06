@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { PASS, ALERT_TEXT, RECORD, won, remain, canObject } from "../data.js";
+import { PASS, PROTECT, ALERT_TEXT, RECORD, won, remain, canObject } from "../data.js";
 import { Icon, I, Status, Back, Tab, Mark, md } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
@@ -31,12 +31,16 @@ export function Pass({ nav, ui }) {
             </div>
             <div className="proof">
               <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">닫히면 증거</span></div>
-              <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "할부" ? `${p.pay.months}개월 할부` : "일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
-              <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
-                <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
-                {canObject(p.pay) ? "닫히면 남은 할부 멈춤 가능" : "할부 멈춤 대상 아님"}
-              </div>
-              {p.shop.guard && <div className="verdict good" style={{ marginTop: 8 }}><Icon d={I.shield} size={16} color="#C2571A" w={2.4} />보증보험으로 남은 돈 환급</div>}
+              <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "할부" ? `${p.pay.months}개월 할부` : p.pay?.method || "일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
+              {p.pay?.method === "안심결제" ? (
+                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />맡겨 둔 돈 {won(remain(p.daysLeft))} · 닫히면 환불</div>
+              ) : (
+                <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
+                  <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
+                  {canObject(p.pay) ? "닫히면 남은 할부 멈춤 가능" : "할부 멈춤 대상 아님"}
+                </div>
+              )}
+              {p.shop.protect === "insurance" && <div className="verdict good" style={{ marginTop: 8 }}><Icon d={I.shield} size={16} color="#C2571A" w={2.4} />보증보험으로 남은 돈 환급</div>}
             </div>
             <div className="pad">
               <button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록 보기</span><span className="ter">›</span></button>
@@ -98,7 +102,7 @@ export function Alert({ nav, ui, params }) {
     { t: canObject(p.pay) ? "할부라 안심" : "영수증 챙기기", s: canObject(p.pay) ? "닫으면 할부 멈춤 가능" : "피해구제에 필요", act: "자세히", fn: () => ui.toast("20만 원 이상, 3개월 이상 할부면 남은 할부를 멈출 수 있어요") },
   ] : [
     { t: "카드사에 할부 멈춤 요청", s: canObject(p.pay) ? `${p.pay.months}개월 할부 · 할부거래법` : "대상 아님 · 건너뛰기", act: "요청 문구 복사", fn: () => ui.copy(`${p.shop.name}이 폐업해 이용권을 쓸 수 없게 되어, 남은 할부금 지급 거절(항변권)을 요청합니다.`) },
-    { t: p.shop.guard ? "보증보험 환급 청구" : "보증보험 없음", s: p.shop.guard ? `약 ${left}` : "3번으로", act: p.shop.guard ? "청구 안내" : "다음", fn: () => ui.toast(p.shop.guard ? "OO보증보험 청구 화면으로 이어져요 (시연)" : "소비자원 피해구제로 넘어가요") },
+    { t: p.shop.protect === "insurance" ? "보증보험 환급 청구" : "보증보험 없음", s: p.shop.protect === "insurance" ? `약 ${left}` : "3번으로", act: p.shop.protect === "insurance" ? "청구 안내" : "다음", fn: () => ui.toast(p.shop.protect === "insurance" ? "OO보증보험 청구 화면으로 이어져요 (시연)" : "소비자원 피해구제로 넘어가요") },
     { t: "소비자원 피해구제 신청", s: "1372 · 영수증 준비", act: "안내 보기", fn: () => ui.toast("1372 소비자상담센터로 연결돼요 (시연)") },
   ];
   return (
@@ -108,8 +112,15 @@ export function Alert({ nav, ui, params }) {
         <div className="pad">
           <span className={`tagc ${a.kind}`}>{t.tag}</span>
           <div className="t26" style={{ marginTop: 12 }}>{p.shop.name}<br />{t.title}</div>
-          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{t.body}</div>
+          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? "남은 돈은 맡겨 둔 곳에서 돌아와요." : t.body}</div>
         </div>
+        {a.kind === "closed" && p.pay?.method === "안심결제" ? (
+          <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <span>자동으로 돌려받는 돈</span>
+            <b>{left}</b>
+            <span>안심결제라 할 일이 없어요 · 결제한 카드로 환불</span>
+          </motion.div>
+        ) : (
         <div className="pad" style={{ marginTop: 26 }}>
           <div className="t18 b7">지금 할 일</div>
           {todos.map((x, i) => (
@@ -120,6 +131,7 @@ export function Alert({ nav, ui, params }) {
             </motion.div>
           ))}
         </div>
+        )}
         {a.kind === "signal" && <div className="pad"><button className="rowlink" onClick={() => nav.go("record")}><span>왜 이런 알림이 왔나요?</span><span className="ter">업장 기록 보기 ›</span></button></div>}
       </div>
     </div>

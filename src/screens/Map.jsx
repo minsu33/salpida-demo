@@ -69,7 +69,7 @@ export function MapScreen({ nav, ui }) {
         </div>
       ) : (
       <div className="chips">
-        <button className={`chip ${guardOnly ? "on guardf" : ""}`} onClick={() => setGuardOnly(!guardOnly)}><PIcon n="check" size={14} color="#C2571A" />&nbsp;보장</button>
+        <button className={`chip ${guardOnly ? "on guardf" : ""}`} onClick={() => setGuardOnly(!guardOnly)}><PIcon n="check" size={14} color="#C2571A" />&nbsp;안심</button>
         {CATS.map((c) => (
           <button key={c.id} className={`chip ${cat === c.id ? "on" : ""} ${c.ready ? "" : "soon"}`} onClick={() => setCat(cat === c.id ? null : c.id)}>
             <PIcon n={c.icon} size={15} color={cat === c.id ? "#fff" : "#4E5968"} />&nbsp;{c.label}

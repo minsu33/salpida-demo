@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TIERS } from "../data.js";
+import { TIERS, PROTECT } from "../data.js";
 import { Icon, I, Status, Back, Sk, md } from "../components.jsx";
 import { getShop } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
@@ -49,16 +49,16 @@ export function Detail({ nav }) {
             </div>
 
             <div className="pad" style={{ marginTop: 26 }}>
-              <div className="t14 sub b7">보장</div>
+              <div className="t14 sub b7">돈 지키는 수단</div>
               {shop.guard ? (
                 <div className="guard" style={{ marginTop: 8 }}>
                   <Icon d={I.shield} size={22} color="#C2571A" />
-                  <div style={{ flex: 1 }}><b>보증보험 가입</b><span>닫아도 남은 돈 환급</span></div>
+                  <div style={{ flex: 1 }}><b>{PROTECT[shop.protect].name} 업장</b><span>{PROTECT[shop.protect].body}</span></div>
                 </div>
               ) : (
                 <div className="guard none" style={{ marginTop: 8 }}>
                   <Icon d={I.shield} size={22} color="#8B95A1" />
-                  <div style={{ flex: 1 }}><b>보증보험 없음</b><span>할부로 내면 지킬 수 있어요</span></div>
+                  <div style={{ flex: 1 }}><b>없음</b><span>할부로 내면 지킬 수 있어요</span></div>
                 </div>
               )}
                           </div>

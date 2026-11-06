@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { TIERS, PASS, won, refundIfQuit, canObject } from "../data.js";
+import { TIERS, PASS, PROTECT, won, refundIfQuit, canObject } from "../data.js";
 import { Icon, I, Status, Back } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
@@ -9,7 +9,7 @@ export function Prep({ nav }) {
   const { state } = useStore();
   const shop = state.shop;
   const rows = [
-    { k: "보증보험", v: shop.guard ? "있음 · 닫으면 환급" : "없음", warn: !shop.guard },
+    { k: "돈 지키는 수단", v: shop.guard ? `${PROTECT[shop.protect].name} · ${PROTECT[shop.protect].body}` : "없음", warn: !shop.guard },
     { k: "3개월 뒤 그만두면", v: `약 ${won(refundIfQuit(PASS.price, 90))} 환급`, s: "소비자분쟁해결기준 계산" },
     { k: "업장 크기", v: `${TIERS[shop.tier].label} · 약 ${shop.pyeong}평` },
   ];
@@ -31,7 +31,7 @@ export function Prep({ nav }) {
         </div>
         <div className="hint">
           <Icon d={I.card} size={20} color="#C2571A" />
-          <span>{shop.guard ? "할부로 내면 한 번 더 안전" : "보증보험 없음 → 할부가 가장 중요"}</span>
+          <span>{shop.protect === "escrow" ? "안심결제면 닫혀도 남은 돈 환불" : shop.guard ? "할부로 내면 한 번 더 안전" : "지킬 수단 없음 → 할부가 가장 중요"}</span>
         </div>
       </div>
       <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={() => nav.go("pay")}>결제 방법 고르기</button></div>
@@ -42,13 +42,15 @@ export function Prep({ nav }) {
 // 결제 방법: 할부를 기본으로 골라 두고, 고른 대로 이용권을 등록한다
 export function Pay({ nav, ui }) {
   const { state, dispatch } = useStore();
-  const [method, setMethod] = useState("할부");
+  const escrow = state.shop.protect === "escrow";
+  const [method, setMethod] = useState(escrow ? "안심결제" : "할부");
   const [months, setMonths] = useState(6);
   const [amount, setAmount] = useState(PASS.price);
   const setAmt = (v) => setAmount(Math.min(99999999, Number(v.replace(/\D/g, "")) || 0));
-  const ok = canObject({ method, months, amount });
+  const ok = method === "안심결제" || canObject({ method, months, amount });
   const opts = [
-    { id: "할부", t: "카드 3개월 이상 할부", s: "닫으면 남은 할부 멈춤", tag: "추천" },
+    ...(escrow ? [{ id: "안심결제", t: "안심결제", s: "닫히면 남은 돈 자동 환불", tag: "추천" }] : []),
+    { id: "할부", t: "카드 3개월 이상 할부", s: "닫으면 남은 할부 멈춤", tag: escrow ? "" : "추천" },
     { id: "일시불", t: "일시불", s: "닫으면 돌려받기 어려움" },
   ];
   const submit = () => { dispatch({ type: "register", pay: { method, months: method === "할부" ? months : 0, amount, date: new Date().toISOString().slice(0, 10) } }); ui.registered(); };
@@ -74,7 +76,7 @@ export function Pay({ nav, ui }) {
           </>}
           <motion.div key={String(ok)} className={`verdict ${ok ? "good" : ""}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
             <Icon d={ok ? I.check : I.info} size={18} color={ok ? "#C2571A" : "#4E5968"} w={2.6} />
-            {ok ? "닫히면 남은 할부 멈출 수 있음" : method === "할부" ? "20만 원·3개월 이상이어야 멈춤 가능" : "닫히면 지켜 줄 장치 없음"}
+            {method === "안심결제" ? "닫히면 남은 돈 자동 환불" : ok ? "닫히면 남은 할부 멈출 수 있음" : method === "할부" ? "20만 원·3개월 이상이어야 멈춤 가능" : "닫히면 지켜 줄 장치 없음"}
           </motion.div>
         </div>
       </div>
