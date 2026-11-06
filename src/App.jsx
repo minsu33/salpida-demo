@@ -65,7 +65,7 @@ function Shell() {
   const ui = {
     toast: say,
     copy: (text) => { navigator.clipboard?.writeText(text).catch(() => {}); say("문구를 복사했어요"); },
-    registered: () => { clear(); nav.tab("pass"); say("이제 살피다가 이 업장을 지켜볼게요"); later(timeSkip, 2600); },
+    registered: () => { clear(); nav.tab("pass"); say("이 업장을 지켜볼게요"); later(timeSkip, 2600); },
     // 상태바를 빠르게 세 번 누르면 시연 메뉴가 열린다 (홈 화면 앱에서도 동작)
     secret: () => { const t = Date.now(); taps.current = [...taps.current.filter((x) => t - x < 700), t]; if (taps.current.length >= 3) { taps.current = []; setPanel(true); } },
   };

@@ -5,9 +5,9 @@ import { useStore } from "../lib/store.jsx";
 
 // 처음 설치했을 때만: 스플래시 → 소개 카드 3장 → 권한 요청. 다음부터는 Splash만 잠깐.
 const SLIDES = [
-  { k: "결제 전", t: "이 업장, 크기부터\n살펴봐요", s: "서울·경기 인허가 10년치로 본\n크기별 폐업 차이를 알려 드려요" },
-  { k: "결제할 때", t: "할부로 내면\n닫혀도 지켜져요", s: "보증보험·환불 기준은 앱이 먼저 알려 드리고,\n결제 방법만 고르면 돼요" },
-  { k: "결제 후", t: "바뀌면\n먼저 알려 드려요", s: "인허가가 바뀌거나 닫기 전 신호가 보이면\n바로 알림을 보내요" },
+  { k: "결제 전", t: "이 업장, 크기부터\n살펴봐요", s: "작은 업장은 폐업이 약 2배" },
+  { k: "결제할 때", t: "할부로 내면\n닫혀도 지켜져요", s: "결제 방법만 고르면 돼요" },
+  { k: "결제 후", t: "닫히면\n할 일을 알려 드려요", s: "폐업 등록 즉시 알림" },
 ];
 
 function Art({ i }) {
@@ -68,17 +68,16 @@ export function Onboarding({ nav }) {
       <Status />
       <div style={{ padding: "48px 24px 0" }}>
         <div className="t26">살피다를 쓰려면<br />두 가지만 허용해 주세요</div>
-        {[["위치", "근처 업장을 지도에 보여 드려요", I.pin], ["알림", "이용권 업장이 바뀌면 먼저 알려 드려요", I.bell]].map(([b, s, d]) => (
+        {[["위치", "근처 업장 보기", I.pin], ["알림", "폐업 등록 알림", I.bell]].map(([b, s, d]) => (
           <div className="ob" key={b} style={{ marginTop: 22 }}><div className="obi"><Icon d={d} color="#C2571A" w={2.2} /></div><div><b>{b}</b><span>{s}</span></div></div>
         ))}
-        <div className="t14 ter" style={{ marginTop: 28 }}>언제든 설정에서 바꿀 수 있어요</div>
-      </div>
+              </div>
       <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={() => setAsk(true)}>허용하고 시작하기</button></div>
       {ask && (
         <div className="sys-dim">
           <div className="sys">
             <b>'살피다'에서 알림을 보내고자 합니다</b>
-            <p>이용권을 등록한 업장의 인허가가 바뀌거나 참고 신호가 보이면 알려 드려요.</p>
+            <p>등록한 업장에 폐업이 등록되면 알려 드려요.</p>
             <div className="sys-btns"><span onClick={start}>허용 안 함</span><span style={{ fontWeight: 700 }} onClick={start}>허용</span></div>
           </div>
         </div>

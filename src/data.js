@@ -26,11 +26,11 @@ export const canObject = (pay) => !!pay && pay.method === "할부" && pay.amount
 export const ALERT_TEXT = {
   signal: {
     tag: "참고 신호", title: "사장님 글이 3개월째 올라오지 않았어요",
-    body: "문을 닫는다는 뜻은 아니에요. 닫기 전 업장에서 자주 보인 모습이라 미리 알려 드려요.",
+    body: "문을 닫는다는 뜻은 아니에요.",
   },
   closed: {
     tag: "폐업 등록", title: "인허가에 폐업이 등록됐어요",
-    body: "서울시 인허가 자료에 폐업이 새로 등록됐어요. 지금 할 일을 순서대로 챙기세요.",
+    body: "아래 순서대로 하면 돼요.",
   },
 };
 
