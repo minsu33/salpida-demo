@@ -8,7 +8,8 @@ let cache = null;
 const wait = (ms) => new Promise((r) => setTimeout(r, FAST ? 0 : ms));
 
 async function load() {
-  if (!cache) cache = fetch("/data/shops.json").then((r) => { if (!r.ok) throw new Error("load"); return r.json(); });
+  if (!cache) cache = fetch("/data/shops.json").then((r) => { if (!r.ok) throw new Error("load"); return r.json(); })
+    .then((d) => ({ ...d, shops: d.shops.map((s) => ({ ...s, cat: /필라테스/.test(s.name) ? "pilates" : /요가/.test(s.name) ? "yoga" : "gym" })) }));
   return cache;
 }
 

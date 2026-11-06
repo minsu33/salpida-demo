@@ -24,7 +24,21 @@ export const I = {
   arrow: <path d="M9 6l6 6-6 6" />,
   search: <><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></>,
   user: <><circle cx="12" cy="8" r="4" /><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6" /></>,
+  gym: <path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11" />,
+  pilates: <><circle cx="16.5" cy="5" r="2" /><path d="M3 19h18M5.5 19l4.5-6h5.5l2 6M10 13l5.5-4.5" /></>,
+  yoga: <><circle cx="12" cy="4.5" r="2" /><path d="M12 8v5M5 10.5l7 2.5 7-2.5M6 19l6-4 6 4" /></>,
+  swim: <><path d="M3 16c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0 3 1.3 4.5 0 3-1.3 4.5 0M3 20c1.5 1.3 3 1.3 4.5 0s3-1.3 4.5 0 3 1.3 4.5 0 3-1.3 4.5 0" /><circle cx="16" cy="7" r="2" /><path d="M5 13l5-5 3 3" /></>,
+  golf: <><path d="M9 21V3l8 4-8 4" /><path d="M5 21h10" /></>,
 };
+
+// 업종: 지도 핀 아이콘과 검색 아래 칩에 같이 쓴다. ready가 false면 곧 추가될 업종
+export const CATS = [
+  { id: "gym", label: "헬스", icon: "gym", ready: true },
+  { id: "pilates", label: "필라테스", icon: "pilates", ready: true },
+  { id: "yoga", label: "요가", icon: "yoga", ready: false },
+  { id: "swim", label: "수영", icon: "swim", ready: false },
+  { id: "golf", label: "골프", icon: "golf", ready: false },
+];
 
 export const Status = ({ dark, onSecret }) => (
   <div className="sb" style={dark ? { color: "#fff" } : undefined} onClick={onSecret}>
