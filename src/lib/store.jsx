@@ -20,7 +20,7 @@ function reducer(s, a) {
     case "checked": return { ...s, checked: (s.checked || 0) + 1 };
     case "notify": return { ...s, notify: { ...FRESH.notify, ...s.notify, [a.key]: !(s.notify || FRESH.notify)[a.key] } };
     case "answer": return { ...s, answers: { ...s.answers, [a.id]: a.v } };
-    case "register": return { ...s, pass: { shop: s.shop, daysLeft: PASS.daysLeft, paidBy: s.answers.card === "할부로" ? "할부" : "일시불" }, alerts: [] };
+    case "register": return { ...s, pass: { shop: s.shop, daysLeft: PASS.daysLeft, pay: a.pay, paidBy: a.pay.method }, alerts: [], checked: (s.checked || 0) + 1 };
     case "skip": return s.pass ? { ...s, pass: { ...s.pass, daysLeft: s.pass.daysLeft - SKIP_DAYS } } : s;
     case "alert": return { ...s, alerts: [{ id: a.id || Date.now(), kind: a.kind, read: false }, ...s.alerts] };
     case "read": return { ...s, alerts: s.alerts.map((x) => (x.id === a.id || a.id === "all" ? { ...x, read: true } : x)) };

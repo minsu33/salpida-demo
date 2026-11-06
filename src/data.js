@@ -18,6 +18,10 @@ export const SKIP_DAYS = 90; // 시연에서 '3개월 뒤'로 넘기는 날 수
 
 export const won = (n) => `${Math.round(n / 10000)}만 원`;
 export const remain = (daysLeft) => PASS.price * Math.max(0, daysLeft) / PASS.days;
+// 중도 해지 시 환급 (소비자분쟁해결기준: 쓴 기간 이용료 + 총액의 10% 위약금 공제)
+export const refundIfQuit = (price, usedDays) => Math.max(0, price - (price * usedDays) / PASS.days - price * 0.1);
+// 할부 항변: 20만 원 이상, 3개월 이상 신용카드 할부
+export const canObject = (pay) => !!pay && pay.method === "할부" && pay.amount >= 200000 && pay.months >= 3;
 
 export const ALERT_TEXT = {
   signal: {

@@ -7,11 +7,11 @@ import { useStackNav } from "./lib/nav.js";
 import { Onboarding, Splash } from "./screens/Onboarding.jsx";
 import { MapScreen, List } from "./screens/Map.jsx";
 import { Detail } from "./screens/Detail.jsx";
-import { Check, Result, Counter } from "./screens/Check.jsx";
+import { Prep, Pay } from "./screens/Pay.jsx";
 import { Pass, Alerts, Alert, Record } from "./screens/After.jsx";
 import { My } from "./screens/My.jsx";
 
-const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, list: List, detail: Detail, check: Check, result: Result, counter: Counter, pass: Pass, alerts: Alerts, alert: Alert, record: Record, my: My };
+const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, list: List, detail: Detail, prep: Prep, pay: Pay, pass: Pass, alerts: Alerts, alert: Alert, record: Record, my: My };
 
 // 들어갈 때는 오른쪽에서, 뒤로 갈 때는 반대로, 탭 이동은 페이드
 const slide = {
@@ -55,10 +55,11 @@ function Shell() {
     later(() => setPush(null), 6500);
   };
   // 시연용으로 3개월을 몇 초로 줄인다: 등록 → '3개월 뒤' → 참고 신호 알림
+  // 참고 신호는 헛경보가 많아 푸시하지 않고 앱 안에만 쌓는다. 푸시는 인허가 폐업 같은 사실에만.
   const timeSkip = () => {
     setSkip(true);
-    later(() => dispatch({ type: "skip" }), 700);
-    later(() => { setSkip(false); sendAlert("signal"); }, 1700);
+    later(() => { dispatch({ type: "skip" }); dispatch({ type: "alert", kind: "signal", id: Date.now() - 1 }); }, 700);
+    later(() => { setSkip(false); sendAlert("closed"); }, 1700);
   };
 
   const ui = {
@@ -72,12 +73,29 @@ function Shell() {
   const demo = {
     restart: () => { clear(); setPush(null); dispatch({ type: "reset", onboarded: false }); nav.tab("onboarding"); },
     fromMap: () => { clear(); setPush(null); dispatch({ type: "reset", onboarded: true }); nav.tab("map"); },
-    signal: () => { if (!state.pass) return say("먼저 이용권을 등록하세요"); timeSkip(); },
+    signal: () => { if (!state.pass) return say("먼저 이용권을 등록하세요"); dispatch({ type: "alert", kind: "signal", id: Date.now() }); say("참고 신호를 앱 안에 남겼어요"); },
     closed: () => { if (!state.pass) return say("먼저 이용권을 등록하세요"); sendAlert("closed"); },
   };
 
   const openPush = () => { const p = push; setPush(null); dispatch({ type: "read", id: "all" }); nav.tab("alerts"); later(() => nav.go("alert", { id: p.id }), 60); };
   const View = SCREENS[nav.page.name];
+  // 화면 전환: 나가는 화면은 애니메이션 뒤 타이머로 확실히 지운다 (백그라운드 탭에서 애니메이션이 멈춰도 쌓이지 않게)
+  const screenKey = nav.depth + nav.page.name;
+  const [leaving, setLeaving] = useState(null);
+  const prevRef = useRef(null);
+  const first = useRef(true);
+  useEffect(() => {
+    const prev = prevRef.current;
+    if (prev && prev.key !== screenKey) {
+      setLeaving({ ...prev, dir: nav.dir });
+      const t = setTimeout(() => setLeaving((l) => (l && l.key === prev.key ? null : l)), 380);
+      first.current = false;
+      prevRef.current = { key: screenKey, View, params: nav.page.params };
+      return () => clearTimeout(t);
+    }
+    prevRef.current = { key: screenKey, View, params: nav.page.params };
+    first.current = false;
+  }, [screenKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const pushShop = state.pass?.shop;
 
   return (
@@ -85,11 +103,14 @@ function Shell() {
       <div className="fit">
         <div className="device" ref={device}>
           <div className="s">
-            <AnimatePresence initial={false} custom={nav.dir}>
-              <motion.div key={nav.depth + nav.page.name} className="screen" custom={nav.dir} variants={slide} initial="enter" animate="center" exit="exit">
-                <View nav={nav} ui={ui} params={nav.page.params} />
+            {leaving && (
+              <motion.div key={"out" + leaving.key} className="screen" custom={leaving.dir} variants={slide} initial="center" animate="exit" style={{ pointerEvents: "none" }}>
+                <leaving.View nav={nav} ui={ui} params={leaving.params} />
               </motion.div>
-            </AnimatePresence>
+            )}
+            <motion.div key={screenKey} className="screen" custom={nav.dir} variants={slide} initial={first.current ? false : "enter"} animate="center">
+              <View nav={nav} ui={ui} params={nav.page.params} />
+            </motion.div>
 
             <AnimatePresence>
               {push && pushShop && (
@@ -120,7 +141,7 @@ function Shell() {
                 <motion.div className="sys-dim" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setPanel(false)}>
                   <motion.div className="demo" initial={{ y: 40 }} animate={{ y: 0 }} exit={{ y: 40 }} onClick={(e) => e.stopPropagation()}>
                     <b>시연 메뉴</b>
-                    {[["처음 설치한 상태로", demo.restart], ["지도부터 다시 시작", demo.fromMap], ["3개월 뒤 · 참고 신호 알림", demo.signal], ["폐업 등록 알림 보내기", demo.closed]].map(([t, fn]) => (
+                    {[["처음 설치한 상태로", demo.restart], ["지도부터 다시 시작", demo.fromMap], ["참고 신호 남기기 (푸시 없음)", demo.signal], ["폐업 등록 알림 보내기", demo.closed]].map(([t, fn]) => (
                       <button key={t} onClick={() => { setPanel(false); fn(); }}>{t}</button>
                     ))}
                     <button className="ter" onClick={() => setPanel(false)}>닫기</button>

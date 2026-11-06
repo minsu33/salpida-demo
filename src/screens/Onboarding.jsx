@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { TIERS, CHECKS, ALERT_TEXT } from "../data.js";
+import { TIERS, ALERT_TEXT } from "../data.js";
 import { Mark, Icon, I, Status } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
 // 처음 설치했을 때만: 스플래시 → 소개 카드 3장 → 권한 요청. 다음부터는 Splash만 잠깐.
 const SLIDES = [
   { k: "결제 전", t: "이 업장, 크기부터\n살펴봐요", s: "서울·경기 인허가 10년치로 본\n크기별 폐업 차이를 알려 드려요" },
-  { k: "결제할 때", t: "세 가지만\n물어보면 돼요", s: "보증보험, 환불 기준, 할부.\n빠진 게 있으면 물어볼 말까지 챙겨 드려요" },
+  { k: "결제할 때", t: "할부로 내면\n닫혀도 지켜져요", s: "보증보험·환불 기준은 앱이 먼저 알려 드리고,\n결제 방법만 고르면 돼요" },
   { k: "결제 후", t: "바뀌면\n먼저 알려 드려요", s: "인허가가 바뀌거나 닫기 전 신호가 보이면\n바로 알림을 보내요" },
 ];
 
@@ -20,14 +20,9 @@ function Art({ i }) {
     </div>
   );
   if (i === 1) return (
-    <div className="art-card" style={{ padding: "8px 18px" }}>
-      {CHECKS.map((c, j) => (
-        <div key={c.id} className="art-row" style={{ animationDelay: `${j * 0.12}s` }}>
-          <div className="ok" style={j === 1 ? { background: "var(--acc-soft)", color: "var(--acc)", fontWeight: 800 } : undefined}>{j === 1 ? "?" : <Icon d={I.check} size={14} color="#191F28" w={3} />}</div>
-          <div style={{ flex: 1, fontSize: 15, fontWeight: 600 }}>{c.title}</div>
-          <span className="ter" style={{ fontSize: 13 }}>{j === 1 ? "물어보기" : "확인"}</span>
-        </div>
-      ))}
+    <div className="art-card" style={{ padding: 16 }}>
+      <div className="opt on" style={{ margin: 0 }}><span className="radio" /><div style={{ flex: 1 }}><b>카드 6개월 할부<em>추천</em></b><span>닫으면 남은 할부를 멈출 수 있어요</span></div></div>
+      <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />닫혀도 남은 할부를 지킬 수 있어요</div>
     </div>
   );
   return (

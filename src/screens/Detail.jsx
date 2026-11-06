@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TIERS, CHECKS } from "../data.js";
+import { TIERS } from "../data.js";
 import { Icon, I, Status, Back, Sk, md } from "../components.jsx";
 import { getShop } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
@@ -66,14 +66,10 @@ export function Detail({ nav }) {
               <div className="t12 ter" style={{ marginTop: 8 }}>보장 여부는 크기 안내에 반영하지 않아요</div>
             </div>
 
-            <div className="pad" style={{ marginTop: 26 }}>
-              <div className="t14 sub b7">결제 전에 물어볼 세 가지</div>
-              <div className="todo3">{CHECKS.map((c, k) => <span key={c.id}><i>{k + 1}</i>{c.title}</span>)}</div>
-            </div>
           </div>
         )}
       </div>
-      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("check")}>결제 전 체크 시작</button></div>
+      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("prep")}>결제 준비하기</button></div>
     </div>
   );
 }

@@ -193,3 +193,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .mystats span { display: block; font-size: 13px; color: var(--sub); margin-top: 2px; }
 .watch .r { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line); }
 .tab button { width: 70px; }
+/* 결제 준비·결제 방법 */
+.facts { margin: 20px 20px 0; border-top: 1px solid var(--line); }
+.fact { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.fact > span { width: 96px; flex: none; padding-top: 2px; }
+.fact b { display: block; font-size: 17px; } .fact div span { display: block; font-size: 13px; color: var(--ter); margin-top: 3px; line-height: 1.45; }
+.hint { display: flex; gap: 10px; align-items: center; margin: 18px 20px 0; padding: 14px 16px; border-radius: 14px; background: var(--acc-soft); font-size: 15px; font-weight: 600; color: var(--ink); }
+.opt { display: flex; gap: 14px; align-items: flex-start; width: 100%; padding: 18px; margin-top: 10px; border-radius: 16px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); text-align: left; }
+.opt.on { box-shadow: inset 0 0 0 2px var(--acc); background: #FFFBF8; }
+.opt b { display: flex; align-items: center; gap: 6px; font-size: 17px; } .opt b em { font-style: normal; font-size: 12px; font-weight: 700; color: var(--acc); background: var(--acc-soft); padding: 3px 7px; border-radius: 6px; }
+.opt span:not(.radio) { display: block; font-size: 14px; color: var(--sub); margin-top: 4px; line-height: 1.45; }
+.radio { width: 22px; height: 22px; border-radius: 11px; flex: none; margin-top: 1px; box-shadow: inset 0 0 0 2px #C9CED4; }
+.opt.on .radio { box-shadow: inset 0 0 0 7px var(--acc); }
+.pills { display: flex; gap: 8px; margin-top: 8px; }
+.pills button { flex: 1; text-align: center; height: 44px; border-radius: 12px; background: var(--card); font-size: 15px; font-weight: 600; color: var(--sub); }
+.pills button.on { background: #fff; color: var(--acc); box-shadow: inset 0 0 0 2px var(--acc); }
+.verdict { display: flex; gap: 8px; align-items: center; margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: var(--card); font-size: 14px; font-weight: 600; color: var(--sub); }
+.verdict.good { background: var(--acc-soft); color: var(--acc); }
+.proof { margin: 16px 20px 0; padding: 18px; border-radius: 18px; background: var(--card); }

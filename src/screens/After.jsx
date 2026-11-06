@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { PASS, ALERT_TEXT, RECORD, won, remain } from "../data.js";
-import { Icon, I, Status, Back, Tab, Mark } from "../components.jsx";
+import { PASS, ALERT_TEXT, RECORD, won, remain, canObject } from "../data.js";
+import { Icon, I, Status, Back, Tab, Mark, md } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
 const unreadOf = (s) => s.alerts.filter((a) => !a.read).length;
@@ -29,13 +29,18 @@ export function Pass({ nav, ui }) {
               <div className="p"><i style={{ width: `${(100 * p.daysLeft) / PASS.days}%` }} /></div>
               <div className="row t14" style={{ opacity: 0.8 }}><span>{p.daysLeft}일 남음</span><span>남은 이용료 약 {won(remain(p.daysLeft))}</span></div>
             </div>
-            <div className="info">
-              <div className="r"><span>결제</span><span>{won(PASS.price)} · {p.paidBy}</span></div>
-              <div className="r"><span>보장</span><span>{p.shop.guard ? "보장 업장 · 닫아도 환급" : "보장 없음"}</span></div>
+            <div className="proof">
+              <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">닫혔을 때 증거가 돼요</span></div>
+              <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "할부" ? `${p.pay.months}개월 할부` : "일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
+              <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
+                <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
+                {canObject(p.pay) ? "닫히면 남은 할부를 멈출 수 있어요" : "할부 멈춤 대상이 아니에요"}
+              </div>
+              {p.shop.guard && <div className="verdict good" style={{ marginTop: 8 }}><Icon d={I.shield} size={16} color="#C2571A" w={2.4} />보장 업장이라 남은 이용료도 돌려받아요</div>}
             </div>
             <div className="pad">
               <button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록 보기</span><span className="ter">매달 쌓여요 ›</span></button>
-              <div className="t14 ter" style={{ marginTop: 14, lineHeight: 1.5 }}>폐업·휴업 등록, 면적·대표자 변경, 닫기 전 업장에서 자주 보인 신호가 생기면 알려 드려요.</div>
+              <div className="t14 ter" style={{ marginTop: 14, lineHeight: 1.5 }}>인허가에 폐업·휴업이 등록되면 바로 알려 드려요. 닫기 전 업장에서 자주 보인 신호는 알림 대신 업장 기록에 남겨요.</div>
             </div>
           </>
         )}
@@ -93,7 +98,7 @@ export function Alert({ nav, ui, params }) {
     { t: "업장에 운영 계획 물어보기", s: "다음 달에도 정상 운영하는지 직접 확인해요", act: "문구 복사", fn: () => ui.copy("요즘 운영은 계속 정상으로 하시나요? 다음 달 일정도 알 수 있을까요?") },
     { t: p.paidBy === "할부" ? "할부 결제라 안심이에요" : "일시불이면 영수증 챙기기", s: p.paidBy === "할부" ? "문을 닫으면 남은 할부를 멈출 수 있어요" : "피해구제를 신청할 때 결제 증빙이 필요해요", act: "자세히", fn: () => ui.toast("20만 원 이상, 3개월 이상 할부면 남은 할부를 멈출 수 있어요") },
   ] : [
-    { t: "카드사에 남은 할부 멈춤 요청", s: p.paidBy === "할부" ? "할부거래법에 따라 남은 할부 지급을 거절할 수 있어요" : "일시불이면 이 단계는 건너뛰세요", act: "요청 문구 복사", fn: () => ui.copy(`${p.shop.name}이 폐업해 이용권을 쓸 수 없게 되어, 남은 할부금 지급 거절(항변권)을 요청합니다.`) },
+    { t: "카드사에 남은 할부 멈춤 요청", s: canObject(p.pay) ? `${p.pay.months}개월 할부 · 할부거래법에 따라 남은 할부 지급을 거절할 수 있어요` : "일시불·짧은 할부는 이 단계를 건너뛰세요", act: "요청 문구 복사", fn: () => ui.copy(`${p.shop.name}이 폐업해 이용권을 쓸 수 없게 되어, 남은 할부금 지급 거절(항변권)을 요청합니다.`) },
     { t: p.shop.guard ? "보증보험에 환급 청구" : "보장 업장이 아니었어요", s: p.shop.guard ? `남은 이용료 약 ${left}을 돌려받을 수 있어요` : "아래 피해구제를 신청하세요", act: p.shop.guard ? "청구 안내" : "다음", fn: () => ui.toast(p.shop.guard ? "OO보증보험 청구 화면으로 이어져요 (시연)" : "소비자원 피해구제로 넘어가요") },
     { t: "한국소비자원 피해구제 신청", s: "1372 소비자상담센터 · 결제 영수증과 이용권을 준비해요", act: "안내 보기", fn: () => ui.toast("1372 소비자상담센터로 연결돼요 (시연)") },
   ];

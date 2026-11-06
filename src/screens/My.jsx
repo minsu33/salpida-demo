@@ -20,7 +20,7 @@ export function My({ nav, ui }) {
         <div className="pad t26" style={{ paddingTop: 14 }}>MY</div>
         <div className="mystats">
           <div><b>{(state.viewed || []).length}</b><span>살펴본 업장</span></div>
-          <div><b>{state.checked || 0}</b><span>결제 전 체크</span></div>
+          <div><b>{state.checked || 0}</b><span>결제 준비</span></div>
           <div><b>{state.pass ? 1 : 0}</b><span>지켜보는 이용권</span></div>
         </div>
         <div className="watch" style={{ marginTop: 26 }}>
