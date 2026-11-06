@@ -1,105 +1,139 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { SHOPS, ALERT } from "./data.js";
-import { Mark } from "./ui.jsx";
-import * as S from "./screens.jsx";
+import { AnimatePresence, motion } from "framer-motion";
+import { ALERT_TEXT } from "./data.js";
+import { Mark } from "./components.jsx";
+import { StoreProvider, useStore } from "./lib/store.jsx";
+import { useStackNav } from "./lib/nav.js";
+import { Onboarding, Splash } from "./screens/Onboarding.jsx";
+import { MapScreen } from "./screens/Map.jsx";
+import { Detail } from "./screens/Detail.jsx";
+import { Check, Result, Counter } from "./screens/Check.jsx";
+import { Pass, Alerts, Alert, Record } from "./screens/After.jsx";
 
-const KEY = "salpida-demo";
-const FRESH = { answers: {}, pass: null, alert: false, unread: false, onboarded: false };
-// 주소 끝에 ?reset 을 붙이면 처음 설치한 상태로 시연을 다시 시작한다
-const load = () => {
-  try {
-    if (new URLSearchParams(location.search).has("reset")) { localStorage.removeItem(KEY); history.replaceState(null, "", location.pathname); }
-    return { ...FRESH, ...JSON.parse(localStorage.getItem(KEY)) };
-  } catch { return FRESH; }
+const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, detail: Detail, check: Check, result: Result, counter: Counter, pass: Pass, alerts: Alerts, alert: Alert, record: Record };
+
+// 들어갈 때는 오른쪽에서, 뒤로 갈 때는 반대로, 탭 이동은 페이드
+const slide = {
+  enter: (d) => (d === 0 ? { opacity: 0, x: 0, zIndex: 1 } : d > 0 ? { x: "100%", zIndex: 2 } : { x: "-25%", zIndex: 0 }),
+  center: { x: 0, opacity: 1, transition: { type: "tween", ease: [0.2, 0.8, 0.2, 1], duration: 0.34 } },
+  exit: (d) => (d === 0 ? { opacity: 0, transition: { duration: 0.15 } } : d > 0 ? { x: "-25%", zIndex: 0, transition: { duration: 0.34 } } : { x: "100%", zIndex: 2, transition: { duration: 0.3 } }),
 };
 
 // PC에서는 폰 틀을 창 높이에 맞춰 줄인다
 function useFit(ref) {
   useLayoutEffect(() => {
     const fit = () => {
-      const el = ref.current;
-      if (!el) return;
-      const pc = window.innerWidth > 520;
-      const k = pc ? Math.min(1, (window.innerHeight - 48) / 874) : 1;
-      el.parentElement.style.width = pc ? `${402 * k}px` : "";
-      el.parentElement.style.height = pc ? `${874 * k}px` : "";
+      const el = ref.current; if (!el) return;
+      const pc = window.innerWidth > 520; const k = pc ? Math.min(1, (window.innerHeight - 48) / 874) : 1;
+      el.parentElement.style.width = pc ? `${402 * k}px` : ""; el.parentElement.style.height = pc ? `${874 * k}px` : "";
       el.style.transform = pc ? `scale(${k})` : "";
     };
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
+    fit(); window.addEventListener("resize", fit); return () => window.removeEventListener("resize", fit);
   }, [ref]);
 }
 
-export default function App() {
-  const [state, setState] = useState(load);
-  // 온보딩은 처음 한 번만. 다음부터는 로고만 잠깐 보이고 지도로 간다
-  const [stack, setStack] = useState(() => [{ name: state.onboarded ? "splash" : "onboarding" }]);
-  const [shopId, setShopId] = useState("bodyfit");
-  const [push, setPush] = useState(null); // null | "in" | "out"
+function Shell() {
+  const { state, dispatch } = useStore();
+  const nav = useStackNav(state.onboarded ? "splash" : "onboarding");
+  const [push, setPush] = useState(null);
   const [toast, setToast] = useState(null);
+  const [skip, setSkip] = useState(false);
+  const [panel, setPanel] = useState(false);
   const device = useRef(null);
   const timers = useRef([]);
+  const taps = useRef([]);
   useFit(device);
-
-  useEffect(() => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* 저장 못 해도 시연은 된다 */ } }, [state]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   const later = (fn, ms) => timers.current.push(setTimeout(fn, ms));
-  const page = stack[stack.length - 1];
-  const shop = SHOPS.find((s) => s.id === shopId);
-  const patch = (p) => setState((s) => ({ ...s, ...p }));
-  const say = (msg) => { setToast(null); requestAnimationFrame(() => setToast({ msg, k: Date.now() })); };
-
-  const nav = {
-    go: (name) => setStack((st) => [...st, { name }]),
-    back: () => setStack((st) => (st.length > 1 ? st.slice(0, -1) : st)),
-    tab: (name) => setStack([{ name }]),
+  const clear = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+  const say = (msg) => setToast({ msg, k: Date.now() });
+  const sendAlert = (kind) => {
+    const id = Date.now();
+    dispatch({ type: "alert", kind, id }); setPush({ kind, id });
+    later(() => setPush(null), 6500);
+  };
+  // 시연용으로 3개월을 몇 초로 줄인다: 등록 → '3개월 뒤' → 참고 신호 알림
+  const timeSkip = () => {
+    setSkip(true);
+    later(() => dispatch({ type: "skip" }), 700);
+    later(() => { setSkip(false); sendAlert("signal"); }, 1700);
   };
 
-  const actions = {
-    start: () => { timers.current.forEach(clearTimeout); setState({ ...FRESH, onboarded: true }); setShopId("bodyfit"); setPush(null); nav.tab("map"); },
-    openShop: (id) => { setShopId(id); nav.go("detail"); },
-    answer: (id, v) => setState((s) => ({ ...s, answers: { ...s.answers, [id]: v } })),
+  const ui = {
+    toast: say,
     copy: (text) => { navigator.clipboard?.writeText(text).catch(() => {}); say("문구를 복사했어요"); },
-    // 이용권을 등록하면 살피다가 지켜보기 시작하고, 잠시 뒤 결제 후 알림이 온다 (시연용으로 시간을 줄임)
-    register: () => {
-      patch({ pass: { shopId }, alert: false, unread: false });
-      nav.tab("pass");
-      say("이제 살피다가 이 업장을 지켜볼게요");
-      later(() => { patch({ alert: true, unread: true }); setPush("in"); }, 3200);
-      later(() => setPush((p) => (p ? "out" : p)), 9200);
-      later(() => setPush(null), 9600);
-    },
-    openPush: () => { setPush(null); patch({ unread: false }); nav.tab("alerts"); },
-    readAlerts: () => patch({ unread: false }),
+    registered: () => { clear(); nav.tab("pass"); say("이제 살피다가 이 업장을 지켜볼게요"); later(timeSkip, 2600); },
+    // 상태바를 빠르게 세 번 누르면 시연 메뉴가 열린다 (홈 화면 앱에서도 동작)
+    secret: () => { const t = Date.now(); taps.current = [...taps.current.filter((x) => t - x < 700), t]; if (taps.current.length >= 3) { taps.current = []; setPanel(true); } },
   };
 
-  const props = { nav, actions, state, shop, setShopId };
-  const View = S[page.name];
-  const passShop = state.pass && SHOPS.find((s) => s.id === state.pass.shopId);
+  const demo = {
+    restart: () => { clear(); setPush(null); dispatch({ type: "reset", onboarded: false }); nav.tab("onboarding"); },
+    fromMap: () => { clear(); setPush(null); dispatch({ type: "reset", onboarded: true }); nav.tab("map"); },
+    signal: () => { if (!state.pass) return say("먼저 이용권을 등록하세요"); timeSkip(); },
+    closed: () => { if (!state.pass) return say("먼저 이용권을 등록하세요"); sendAlert("closed"); },
+  };
+
+  const openPush = () => { const p = push; setPush(null); dispatch({ type: "read", id: "all" }); nav.tab("alerts"); later(() => nav.go("alert", { id: p.id }), 60); };
+  const View = SCREENS[nav.page.name];
+  const pushShop = state.pass?.shop;
 
   return (
     <div className="stage">
       <div className="fit">
-      <div className="device" ref={device}>
-        <div className="s">
-          <div className="screen" key={stack.length + page.name}><View {...props} /></div>
+        <div className="device" ref={device}>
+          <div className="s">
+            <AnimatePresence initial={false} custom={nav.dir}>
+              <motion.div key={nav.depth + nav.page.name} className="screen" custom={nav.dir} variants={slide} initial="enter" animate="center" exit="exit">
+                <View nav={nav} ui={ui} params={nav.page.params} />
+              </motion.div>
+            </AnimatePresence>
 
-          {push && passShop && (
-            <div className={`push ${push === "out" ? "out" : ""}`} onClick={actions.openPush}>
-              <div className="appic"><Mark /></div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="row" style={{ fontSize: 14 }}><b>살피다</b><span className="ter" style={{ fontSize: 13 }}>지금</span></div>
-                <div style={{ fontSize: 15, fontWeight: 700, marginTop: 3 }}>{passShop.name} · 참고 신호</div>
-                <div style={{ fontSize: 14, marginTop: 2, color: "#4E5968" }}>{ALERT.title}</div>
-              </div>
-            </div>
-          )}
-          {toast && <div className="toast" key={toast.k}>{toast.msg}</div>}
+            <AnimatePresence>
+              {push && pushShop && (
+                <motion.div className="push" key={push.id} onClick={openPush} drag="y" dragConstraints={{ top: 0, bottom: 0 }} onDragEnd={(_, i) => i.offset.y < -30 && setPush(null)}
+                  initial={{ y: -140 }} animate={{ y: 0, transition: { type: "spring", stiffness: 380, damping: 26 } }} exit={{ y: -160, transition: { duration: 0.25 } }}>
+                  <div className="appic"><Mark size={30} /></div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="row t14"><b>살피다</b><span className="ter t13">지금</span></div>
+                    <div className="t15 b7" style={{ marginTop: 3 }}>{pushShop.name} · {ALERT_TEXT[push.kind].tag}</div>
+                    <div className="t14 sub" style={{ marginTop: 2 }}>{ALERT_TEXT[push.kind].title}</div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {skip && (
+                <motion.div className="skipper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.15 } }}>3개월 뒤</motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {toast && <div className="toast" key={toast.k}>{toast.msg}</div>}
+
+            <AnimatePresence>
+              {panel && (
+                <motion.div className="sys-dim" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setPanel(false)}>
+                  <motion.div className="demo" initial={{ y: 40 }} animate={{ y: 0 }} exit={{ y: 40 }} onClick={(e) => e.stopPropagation()}>
+                    <b>시연 메뉴</b>
+                    {[["처음 설치한 상태로", demo.restart], ["지도부터 다시 시작", demo.fromMap], ["3개월 뒤 · 참고 신호 알림", demo.signal], ["폐업 등록 알림 보내기", demo.closed]].map(([t, fn]) => (
+                      <button key={t} onClick={() => { setPanel(false); fn(); }}>{t}</button>
+                    ))}
+                    <button className="ter" onClick={() => setPanel(false)}>닫기</button>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );
+}
+
+export default function App() {
+  return <StoreProvider><Shell /></StoreProvider>;
 }
