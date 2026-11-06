@@ -37,7 +37,7 @@ export function Check({ nav }) {
         ))}
       </div>
       <div className="bottom">
-        <motion.button className={`btn ${done ? "acc-b" : "off"}`} style={{ flex: 1 }} animate={done ? { scale: [1, 1.03, 1] } : {}} onClick={() => nav.go("result")}>{done ? "결과 보기" : "세 가지를 골라 주세요"}</motion.button>
+        <motion.button className={`btn ${done ? "acc-b" : "off"}`} style={{ flex: 1 }} animate={done ? { scale: [1, 1.03, 1] } : {}} onClick={() => { dispatch({ type: "checked" }); nav.go("result"); }}>{done ? "결과 보기" : "세 가지를 골라 주세요"}</motion.button>
       </div>
     </div>
   );

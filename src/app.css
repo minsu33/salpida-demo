@@ -187,3 +187,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .lrow:active { background: #FAFAFB; }
 .guard:not(.none) { background: var(--acc-soft); }
 .guard:not(.none) b { color: var(--acc); }
+.mystats { display: flex; margin: 18px 20px 0; padding: 18px 0; border-radius: 18px; background: var(--acc-soft); }
+.mystats > div { flex: 1; text-align: center; }
+.mystats b { display: block; font-size: 26px; font-weight: 800; color: var(--acc); }
+.mystats span { display: block; font-size: 13px; color: var(--sub); margin-top: 2px; }
+.watch .r { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.tab button { width: 70px; }
