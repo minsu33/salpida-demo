@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { PASS, PROTECT, ALERT_TEXT, RECORD, won, remain, canObject } from "../data.js";
+import { PASS, PROTECT, ALERT_TEXT, RECORD, won, remain, held, canObject } from "../data.js";
 import { Icon, I, Status, Back, Tab, Mark, md } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
@@ -33,7 +33,7 @@ export function Pass({ nav, ui }) {
               <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">닫히면 증거</span></div>
               <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "할부" ? `${p.pay.months}개월 할부` : p.pay?.method || "일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
               {p.pay?.method === "안심결제" ? (
-                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />맡겨 둔 돈 {won(remain(p.daysLeft))} · 닫히면 환불</div>
+                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />맡겨 둔 돈 {won(held(p.daysLeft))} · 닫히면 환불</div>
               ) : (
                 <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
                   <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
@@ -117,7 +117,7 @@ export function Alert({ nav, ui, params }) {
         {a.kind === "closed" && p.pay?.method === "안심결제" ? (
           <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <span>자동으로 돌려받는 돈</span>
-            <b>{left}</b>
+            <b>{won(held(p.daysLeft))}</b>
             <span>안심결제라 할 일이 없어요 · 결제한 카드로 환불</span>
           </motion.div>
         ) : (

@@ -31,7 +31,7 @@ export function Prep({ nav }) {
         </div>
         <div className="hint">
           <Icon d={I.card} size={20} color="#C2571A" />
-          <span>{shop.protect === "escrow" ? "안심결제면 닫혀도 남은 돈 환불" : shop.guard ? "할부로 내면 한 번 더 안전" : "지킬 수단 없음 → 할부가 가장 중요"}</span>
+          <span>{shop.protect === "escrow" ? "안심결제면 닫혀도 맡긴 돈 환불" : shop.guard ? "할부로 내면 한 번 더 안전" : "지킬 수단 없음 → 할부가 가장 중요"}</span>
         </div>
       </div>
       <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={() => nav.go("pay")}>결제 방법 고르기</button></div>
@@ -49,7 +49,7 @@ export function Pay({ nav, ui }) {
   const setAmt = (v) => setAmount(Math.min(99999999, Number(v.replace(/\D/g, "")) || 0));
   const ok = method === "안심결제" || canObject({ method, months, amount });
   const opts = [
-    ...(escrow ? [{ id: "안심결제", t: "안심결제", s: "닫히면 남은 돈 자동 환불", tag: "추천" }] : []),
+    ...(escrow ? [{ id: "안심결제", t: "안심결제", s: "절반은 매달 정산 · 닫히면 맡긴 돈 환불", tag: "추천" }] : []),
     { id: "할부", t: "카드 3개월 이상 할부", s: "닫으면 남은 할부 멈춤", tag: escrow ? "" : "추천" },
     { id: "일시불", t: "일시불", s: "닫으면 돌려받기 어려움" },
   ];
@@ -76,7 +76,7 @@ export function Pay({ nav, ui }) {
           </>}
           <motion.div key={String(ok)} className={`verdict ${ok ? "good" : ""}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
             <Icon d={ok ? I.check : I.info} size={18} color={ok ? "#C2571A" : "#4E5968"} w={2.6} />
-            {method === "안심결제" ? "닫히면 남은 돈 자동 환불" : ok ? "닫히면 남은 할부 멈출 수 있음" : method === "할부" ? "20만 원·3개월 이상이어야 멈춤 가능" : "닫히면 지켜 줄 장치 없음"}
+            {method === "안심결제" ? "닫히면 맡긴 돈 자동 환불" : ok ? "닫히면 남은 할부 멈출 수 있음" : method === "할부" ? "20만 원·3개월 이상이어야 멈춤 가능" : "닫히면 지켜 줄 장치 없음"}
           </motion.div>
         </div>
       </div>
