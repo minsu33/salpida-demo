@@ -13,7 +13,7 @@ export const CHECKS = [
   { id: "card", title: "카드 할부", q: "카드 3개월 이상 할부로 내나요?", sub: "할부면 문 닫았을 때 남은 결제를 멈출 수 있어요", opts: ["할부로", "일시불", "아직"], icon: "card", ask: "카드 3개월 이상 할부로 결제할게요." },
 ];
 
-export const PASS = { name: "12개월권", price: 600000, days: 365, daysLeft: 214 };
+export const PASS = { name: "12개월권", price: 600000, days: 365, daysLeft: 365 }; // 등록 직후는 365일 남음
 export const SKIP_DAYS = 90; // 시연에서 '3개월 뒤'로 넘기는 날 수
 
 export const won = (n) => `${Math.round(n / 10000)}만 원`;
