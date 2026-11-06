@@ -70,7 +70,7 @@ const TABS = [
   { id: "map", label: "지도", d: I.pin },
   { id: "pass", label: "내 이용권", d: I.card },
   { id: "alerts", label: "알림", d: I.bell },
-  { id: "my", label: "MY", d: I.user },
+  { id: "my", label: "내 정보", d: I.user },
 ];
 export const Tab = ({ active, go, unread }) => (
   <div className="tab">

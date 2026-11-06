@@ -50,7 +50,7 @@ export function Pay({ nav, ui }) {
   const method = es ? "안심결제" : months ? "할부" : "일시불";
   const pay = { method, months, amount, date: new Date().toISOString().slice(0, 10) };
   const stop = canObject(pay);
-  const lines = [es && `보관된 돈 자동 환불 (최대 ${man(amount / 2)} 원)`, state.shop.protect === "insurance" && "보증보험으로 환급", stop && "남은 할부 멈춤"].filter(Boolean);
+  const lines = [es && `보관된 돈 자동 환불 (최대 ${man(amount / 2)} 원)`, state.shop.protect === "insurance" && "보증보험으로 환급", stop && "남은 할부 멈춤 요청 가능"].filter(Boolean);
   const submit = () => nav.go("qr", { pay });
   return (
     <div className="s">
@@ -67,7 +67,7 @@ export function Pay({ nav, ui }) {
             </div>
             {es && <Split amount={amount} />}
           </>}
-          <div className="t14 sub b6" style={{ marginTop: 20 }}>카드</div>
+          <div className="t14 sub b6" style={{ marginTop: 20 }}>할부</div>
           <div className="pills">{[0, 3, 6, 12].map((v) => <button key={v} className={months === v ? "on" : ""} onClick={() => setMonths(v)}>{v ? `${v}개월` : "일시불"}</button>)}</div>
         </div>
         <motion.div key={lines.join()} className={`ifclose ${lines.length ? "" : "bad"}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
@@ -83,9 +83,9 @@ export function Pay({ nav, ui }) {
 // 안심결제 돈 나눔: 절반은 업장에 바로, 절반은 결제대행사가 맡아 매달 보낸다
 export function Split({ amount }) {
   return (
-    <div className="split">
-      <div className="a"><b>{man(amount / 2)}</b><span>업장에 바로</span></div>
-      <div className="b"><b>{man(amount / 2)}</b><span>결제대행사가 보관</span></div>
+    <div className="split2">
+      <div className="sbar"><i /><i /></div>
+      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">결제대행사 보관 <b>{man(amount / 2)} 원</b></span></div>
     </div>
   );
 }
@@ -106,6 +106,7 @@ export function Qr({ nav, ui, params }) {
       <Status dark /><Back onBack={nav.back} />
       <div className="t26" style={{ color: "#fff", textAlign: "center", marginTop: 30 }}>카운터 QR을 찍어 주세요</div>
       <div className="t14" style={{ color: "#fff", opacity: 0.6, textAlign: "center", marginTop: 8 }}>{state.shop.name} 계산대</div>
+      <div className="t14" style={{ color: "#fff", opacity: 0.6, textAlign: "center", marginTop: 4 }}>QR이 네모 안에 들어오게 해 주세요</div>
       <div className="finder"><div className="qr" style={{ margin: 0, background: "#fff" }}>{QR.map((on, i) => <i key={i} className={on ? "on" : ""} />)}</div><span className="scanline" /></div>
     </div>
   );
@@ -114,10 +115,10 @@ export function Qr({ nav, ui, params }) {
       <div className="scroll">
         <Status /><Back onBack={nav.back} />
         {es ? <>
-          <div className="pad"><div className="t14 acc b7">안심결제 · 결제대행사</div><div className="t26" style={{ marginTop: 6 }}>{state.shop.name}</div></div>
+          <div className="pad"><div className="t26">이대로 결제할까요?</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · 안심결제</div></div>
           <div className="paysum">
             <div className="row"><span>결제 금액</span><b>{won(pay.amount)}</b></div>
-            <div className="row"><span>카드</span><b>내 카드 · {card}</b></div>
+            <div className="row"><span>카드</span><b>내 카드 ···1234 · {card}</b></div>
           </div>
           <div className="pad"><Split amount={pay.amount} /></div>
         </> : <>

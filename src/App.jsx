@@ -57,10 +57,10 @@ function Shell() {
   // 시연용 시간 건너뛰기: 등록 → '2개월 뒤' 참고 신호(앱 안에만) → '1개월 뒤' 폐업 푸시. 한꺼번에 오지 않게 나눈다.
   // 참고 신호는 헛경보가 많아 푸시하지 않고 앱 안에만 쌓는다. 푸시는 인허가 폐업 같은 사실에만.
   const timeSkip = () => {
-    setSkip("2개월 뒤");
+    setSkip("결제 2개월 뒤");
     later(() => { dispatch({ type: "skip", days: 60 }); dispatch({ type: "alert", kind: "signal", id: Date.now() - 1 }); }, 700);
     later(() => { setSkip(false); say("참고 신호가 생겼어요 · 알림 탭에서 볼 수 있어요"); }, 1700);
-    later(() => setSkip("1개월 뒤"), 7700);
+    later(() => setSkip("결제 3개월째"), 7700);
     later(() => dispatch({ type: "skip", days: 30 }), 8400);
     later(() => { setSkip(false); sendAlert("closed"); }, 9400);
   };
@@ -68,7 +68,7 @@ function Shell() {
   const ui = {
     toast: say,
     copy: (text) => { navigator.clipboard?.writeText(text).catch(() => {}); say("문구를 복사했어요"); },
-    registered: () => { clear(); nav.tab("pass"); say("이용권을 등록했어요. 매주 영업 상태를 확인해요"); later(timeSkip, 2600); },
+    registered: () => { clear(); nav.tab("pass"); say("결제했어요. 이용권에 담았어요"); later(timeSkip, 2600); },
     // 상태바를 빠르게 세 번 누르면 시연 메뉴가 열린다 (홈 화면 앱에서도 동작)
     secret: () => { const t = Date.now(); taps.current = [...taps.current.filter((x) => t - x < 700), t]; if (taps.current.length >= 3) { taps.current = []; setPanel(true); } },
   };

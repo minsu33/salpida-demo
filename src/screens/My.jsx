@@ -17,12 +17,12 @@ export function My({ nav, ui }) {
     <div className="s">
       <div className="scroll">
         <Status onSecret={ui.secret} />
-        <div className="pad t26" style={{ paddingTop: 14 }}>MY</div>
+        <div className="pad t26" style={{ paddingTop: 14 }}>내 정보</div>
         <div className="watch" style={{ marginTop: 26 }}>
           <div className="t18 b7">알림</div>
           <Toggle k="closed" label="폐업·휴업 등록" sub="바로 알림" />
           <Toggle k="change" label="업장 정보가 바뀌면" sub="주 1회" />
-          <Toggle k="signal" label="참고 신호" sub="앱 안에만 · 푸시 없음" />
+          <Toggle k="signal" label="참고 신호" sub="앱 안에서만 보여 줘요" />
         </div>
         <div className="pad" style={{ marginTop: 26 }}>
           <div className="t18 b7">데이터</div>

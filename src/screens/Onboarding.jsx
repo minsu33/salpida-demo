@@ -36,8 +36,8 @@ function Art({ i }) {
         </div>
       </div>
       <div className="art-card" style={{ marginTop: 12, background: "#191F28", color: "#fff" }}>
-        <div className="row" style={{ fontSize: 13, opacity: 0.7 }}><span>내 이용권</span><span>275일 남음</span></div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}><span style={{ width: 10, height: 10, borderRadius: 5, background: "#fff" }} /><b style={{ fontSize: 22 }}>영업 중</b></div>
+        <div className="row" style={{ fontSize: 13, opacity: 0.7 }}><span>내 이용권</span><span>환불 진행 중</span></div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}><span style={{ width: 10, height: 10, borderRadius: 5, background: "#FF8A65" }} /><b style={{ fontSize: 22 }}>폐업 등록됨</b></div>
       </div>
     </div>
   );
@@ -68,7 +68,7 @@ export function Onboarding({ nav }) {
       <Status />
       <div style={{ padding: "48px 24px 0" }}>
         <div className="t26">살피다를 쓰려면<br />두 가지만 허용해 주세요</div>
-        {[["위치", "근처 업장을 지도에", I.pin], ["알림", "업장이 닫으면 바로 알림", I.bell]].map(([b, s, d]) => (
+        {[["위치", "내 주변 업장을 지도에 보여 줘요", I.pin], ["알림", "업장이 닫으면 바로 알려 줘요", I.bell]].map(([b, s, d]) => (
           <div className="ob" key={b} style={{ marginTop: 22 }}><div className="obi"><Icon d={d} color="#C2571A" w={2.2} /></div><div><b>{b}</b><span>{s}</span></div></div>
         ))}
               </div>

@@ -30,7 +30,7 @@ export function Detail({ nav }) {
         ) : (
           <div className="fadein">
             <div className="card pad-card" style={{ marginTop: 20 }}>
-              <div className="row"><div className="status"><i />영업 중</div><span className="t14 ter">인허가 {md(d.meta.updatedAt)}</span></div>
+              <div className="row"><div className="status"><i />영업 중</div><span className="t14 ter">{md(d.meta.updatedAt)} 기준</span></div>
                           </div>
 
             <div className="pad" style={{ marginTop: 26 }}>
@@ -46,7 +46,7 @@ export function Detail({ nav }) {
                 ))}
               </div>
               <div className="t14 sub" style={{ marginTop: 10 }}>{shop.tier === "small" ? "작은 업장은 큰 업장보다 1년 안에 닫은 비율이 약 2배" : TIERS[shop.tier].note}</div>
-              <div className="t12 ter" style={{ marginTop: 4 }}>서울·경기 공개 자료 10년 · 이 업장이 닫는다는 뜻은 아니에요</div>
+              <div className="t13 sub" style={{ marginTop: 4 }}>서울·경기 공개 자료 10년 · 이 업장이 닫는다는 뜻은 아니에요</div>
             </div>
 
             <div className="pad" style={{ marginTop: 26 }}>

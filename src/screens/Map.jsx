@@ -101,7 +101,7 @@ export function MapScreen({ nav, ui }) {
               <span className={`chipg ${sel.tier === "small" ? "dark" : ""}`}>{TIERS[sel.tier].label} · 약 {sel.pyeong}평</span>
             </div>
             <button className="btn acc-b" style={{ width: "100%", height: 50, marginTop: 14, fontSize: 16 }} onClick={open}>상세 보기</button>
-            <div className="t12 ter" style={{ marginTop: 10, textAlign: "center" }}>서울시 인허가 {md(data.meta.updatedAt)} 기준 · 상호는 가렸어요</div>
+            <div className="t12 ter" style={{ marginTop: 10, textAlign: "center" }}>서울시 인허가 {md(data.meta.updatedAt)} 기준</div>
           </>
         )}
       </motion.div>
