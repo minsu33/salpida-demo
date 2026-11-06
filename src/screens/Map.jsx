@@ -12,6 +12,7 @@ export function MapScreen({ nav, ui }) {
   const [err, setErr] = useState(null);
   const [guardOnly, setGuardOnly] = useState(false);
   const [cat, setCat] = useState(null);
+  const [q, setQ] = useState("");
   const [selId, setSelId] = useState(state.shop?.id);
   const sheet = useAnimation();
 
@@ -51,7 +52,22 @@ export function MapScreen({ nav, ui }) {
       </div>
       <div className="maptop" />
       <Status onSecret={ui.secret} />
-      <div className="search"><Icon d={I.search} size={20} w={2.4} /><span>업장 검색</span></div>
+      <label className="search">
+        <Icon d={I.search} size={20} w={2.4} />
+        <input value={q} placeholder="업장 검색" onChange={(e) => setQ(e.target.value)} />
+        {q && <button className="sx" onClick={() => setQ("")} aria-label="지우기">×</button>}
+      </label>
+      {q ? (
+        <div className="sresult">
+          {(data?.shops || []).filter((s) => s.name.replace("○○", "").includes(q.trim())).slice(0, 6).map((s) => (
+            <button key={s.id} onClick={() => { setQ(""); setCat(null); setGuardOnly(false); setSelId(s.id); }}>
+              <PIcon n={catOf(s.cat).icon} size={16} color={s.guard ? "#C2571A" : "#4E5968"} />
+              <b>{s.name}</b><span>{s.dist}m</span>
+            </button>
+          ))}
+          {!(data?.shops || []).some((s) => s.name.includes(q.trim())) && <div className="none">'{q}' 업장이 없어요</div>}
+        </div>
+      ) : (
       <div className="chips">
         <button className={`chip ${guardOnly ? "on guardf" : ""}`} onClick={() => setGuardOnly(!guardOnly)}><PIcon n="check" size={14} color="#C2571A" />&nbsp;보장</button>
         {CATS.map((c) => (
@@ -60,6 +76,7 @@ export function MapScreen({ nav, ui }) {
           </button>
         ))}
       </div>
+      )}
 
       <motion.div className="sheet" animate={sheet} drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.4, bottom: 0.1 }}
         onDragEnd={(_, i) => { if (i.offset.y < -50) open(); }}>
