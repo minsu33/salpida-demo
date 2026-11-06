@@ -27,10 +27,11 @@ export function MapScreen({ nav, ui }) {
         {shops.map((s) => {
           const on = sel && s.id === sel.id;
           return (
-            <motion.button key={s.id} className={`mpin ${on ? "on" : ""} ${s.tier}`} style={{ left: `${s.x}%`, top: `${s.y}%`, zIndex: on ? 5 : 2 }}
-              initial={false} animate={{ scale: on ? 1.08 : 1 }} transition={{ type: "spring", stiffness: 500, damping: 22 }}
+            <motion.button key={s.id} className={`mk ${on ? "on" : ""}`} style={{ left: `${s.x}%`, top: `${s.y}%`, zIndex: on ? 5 : 2 }}
+              initial={false} animate={{ scale: on ? 1.12 : 1 }} transition={{ type: "spring", stiffness: 500, damping: 22 }}
               onClick={() => { setSelId(s.id); sheet.start({ y: [12, 0], transition: { duration: 0.25 } }); }}>
-              {on ? <>{s.name} · {TIERS[s.tier].label}</> : `${s.pyeong}평`}
+              <span className="mk-dot">{s.guard ? <Icon d={I.shield} size={13} color={on ? "#fff" : "#191F28"} w={2.4} /> : <i />}</span>
+              <span className="mk-name">{s.name.replace("○○", "")}</span>
             </motion.button>
           );
         })}

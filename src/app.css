@@ -159,3 +159,12 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .sys-btns { display: flex; border-top: 1px solid rgba(60, 60, 67, .25); }
 .sys-btns span { flex: 1; padding: 12px 0; font-size: 16px; color: #0A84FF; cursor: pointer; }
 .sys-btns span + span { border-left: 1px solid rgba(60, 60, 67, .25); }
+
+/* 지도 마커: 네이버 지도처럼 점 + 이름. 크기 정보는 고른 뒤 시트에서 */
+.mk { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.mk-dot { width: 24px; height: 24px; border-radius: 12px; background: #fff; box-shadow: 0 1px 6px rgba(0, 0, 0, .25), inset 0 0 0 2px var(--ink); display: flex; align-items: center; justify-content: center; }
+.mk-dot i { width: 8px; height: 8px; border-radius: 4px; background: var(--ink); }
+.mk-name { font-size: 11px; font-weight: 700; color: var(--ink); white-space: nowrap; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff; }
+.mk.on .mk-dot { width: 32px; height: 32px; border-radius: 16px; background: var(--ink); }
+.mk.on .mk-dot i { background: #fff; }
+.mk.on .mk-name { font-size: 13px; }
