@@ -7,11 +7,11 @@ import { useStackNav } from "./lib/nav.js";
 import { Onboarding, Splash } from "./screens/Onboarding.jsx";
 import { MapScreen, List } from "./screens/Map.jsx";
 import { Detail } from "./screens/Detail.jsx";
-import { Prep, Pay } from "./screens/Pay.jsx";
+import { Prep, Pay, Qr } from "./screens/Pay.jsx";
 import { Pass, Alerts, Alert, Record } from "./screens/After.jsx";
 import { My } from "./screens/My.jsx";
 
-const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, list: List, detail: Detail, prep: Prep, pay: Pay, pass: Pass, alerts: Alerts, alert: Alert, record: Record, my: My };
+const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, list: List, detail: Detail, prep: Prep, pay: Pay, qr: Qr, pass: Pass, alerts: Alerts, alert: Alert, record: Record, my: My };
 
 // 들어갈 때는 오른쪽에서, 뒤로 갈 때는 반대로, 탭 이동은 페이드
 const slide = {

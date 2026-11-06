@@ -31,7 +31,7 @@ export function Pass({ nav, ui }) {
             </div>
             <div className="proof">
               <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">닫히면 증거</span></div>
-              <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "할부" ? `${p.pay.months}개월 할부` : p.pay?.method || "일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
+              <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method || "일시불"}{p.pay?.months ? ` · ${p.pay.months}개월 할부` : ""} · {p.pay?.date ? md(p.pay.date) : ""}</div>
               {p.pay?.method === "안심결제" ? (
                 <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />맡겨 둔 돈 {won(held(p.daysLeft))} · 닫히면 환불</div>
               ) : (
@@ -118,7 +118,8 @@ export function Alert({ nav, ui, params }) {
           <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <span>자동으로 돌려받는 돈</span>
             <b>{won(held(p.daysLeft))}</b>
-            <span>안심결제라 할 일이 없어요 · 결제한 카드로 환불</span>
+            <span>결제한 카드로 환불</span>
+            {canObject(p.pay) && <button className="actbtn" style={{ alignSelf: "flex-start", marginTop: 8 }} onClick={() => ui.copy(`${p.shop.name}이 폐업해 남은 할부금 지급 거절(항변권)을 요청합니다.`)}>받아 간 돈은 할부 멈춤 요청</button>}
           </motion.div>
         ) : (
         <div className="pad" style={{ marginTop: 26 }}>

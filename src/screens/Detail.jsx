@@ -34,7 +34,7 @@ export function Detail({ nav }) {
                           </div>
 
             <div className="pad" style={{ marginTop: 26 }}>
-              <div className="t14 sub b7">업장 크기</div>
+              <div className="t14 sub b7">폐업 차이가 난 점 · 크기</div>
               <div className="t20" style={{ marginTop: 4 }}>약 {shop.pyeong}평 · {t.label}{shop.tier === "small" && <span className="acc"> · 폐업 약 2배</span>}</div>
                             <div style={{ marginTop: 6 }}>
                 {Object.entries(TIERS).map(([k, v]) => (

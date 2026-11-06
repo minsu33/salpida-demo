@@ -28,7 +28,8 @@ export const PROTECT = {
   insurance: { name: "보증보험", short: "보험사 가입", body: "닫히면 보험사가 환급" },
 };
 // 할부 항변: 20만 원 이상, 3개월 이상 신용카드 할부
-export const canObject = (pay) => !!pay && pay.method === "할부" && pay.amount >= 200000 && pay.months >= 3;
+export const canObject = (pay) => !!pay && (pay.method === "할부" || pay.method === "안심결제") && pay.amount >= 200000 && pay.months >= 3;
+export const man = (n) => `${+(n / 10000).toFixed(1)}만`;
 
 export const ALERT_TEXT = {
   signal: {
