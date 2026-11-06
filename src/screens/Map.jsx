@@ -5,7 +5,7 @@ import { Icon, I, PIcon, CATS, Status, Tab, Sk, md, Back } from "../components.j
 import { getShops } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
 
-// 지도: 핀은 업종 아이콘, 보장 업장은 주황 체크. 아래 시트를 위로 끌거나 '상세 보기'로 상세에 들어간다.
+// 지도: 핀은 업종 아이콘, 보장 업장은 같은 아이콘을 주황으로. 아래 시트를 위로 끌거나 '상세 보기'로 상세에 들어간다.
 export function MapScreen({ nav, ui }) {
   const { state, dispatch } = useStore();
   const [data, setData] = useState(null);
@@ -42,7 +42,7 @@ export function MapScreen({ nav, ui }) {
             <motion.button key={s.id} className={`mk ${on ? "on" : ""} ${s.guard ? "g" : ""}`} style={{ left: `${s.x}%`, top: `${s.y}%`, zIndex: on ? 5 : 2 }}
               initial={false} animate={{ scale: on ? 1.12 : 1 }} transition={{ type: "spring", stiffness: 500, damping: 22 }}
               onClick={() => { setSelId(s.id); sheet.start({ y: [12, 0], transition: { duration: 0.25 } }); }}>
-              <span className="mk-dot"><PIcon n={s.guard ? "check" : catOf(s.cat).icon} size={on ? 18 : 15} color={on ? "#fff" : s.guard ? "#C2571A" : "#191F28"} /></span>
+              <span className="mk-dot"><PIcon n={catOf(s.cat).icon} size={on ? 18 : 15} color={on ? "#fff" : s.guard ? "#C2571A" : "#191F28"} /></span>
               {named.has(s.id) && <span className="mk-name">{s.name.replace("○○", "")}</span>}
             </motion.button>
           );
