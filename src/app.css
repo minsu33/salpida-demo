@@ -227,3 +227,4 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .amt { display: flex; align-items: baseline; gap: 4px; margin-top: 8px; padding: 0 0 8px; border-bottom: 2px solid var(--acc); }
 .amt input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font: inherit; font-size: 26px; font-weight: 700; color: var(--ink); }
 .amt span { font-size: 20px; font-weight: 700; }
+.mk:not(.g):not(.on) .mk-dot { box-shadow: 0 1px 5px rgba(0, 0, 0, .2), inset 0 0 0 1.5px #D1D6DB; }

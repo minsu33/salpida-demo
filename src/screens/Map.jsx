@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { TIERS } from "../data.js";
-import { Icon, I, CATS, Status, Tab, Sk, md, Back } from "../components.jsx";
+import { Icon, I, PIcon, CATS, Status, Tab, Sk, md, Back } from "../components.jsx";
 import { getShops } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
 
@@ -42,7 +42,7 @@ export function MapScreen({ nav, ui }) {
             <motion.button key={s.id} className={`mk ${on ? "on" : ""} ${s.guard ? "g" : ""}`} style={{ left: `${s.x}%`, top: `${s.y}%`, zIndex: on ? 5 : 2 }}
               initial={false} animate={{ scale: on ? 1.12 : 1 }} transition={{ type: "spring", stiffness: 500, damping: 22 }}
               onClick={() => { setSelId(s.id); sheet.start({ y: [12, 0], transition: { duration: 0.25 } }); }}>
-              <span className="mk-dot"><Icon d={s.guard ? I.check : I[catOf(s.cat).icon]} size={on ? 17 : 14} color={on ? "#fff" : s.guard ? "#C2571A" : "#191F28"} w={s.guard ? 3 : 2.2} /></span>
+              <span className="mk-dot"><PIcon n={s.guard ? "check" : catOf(s.cat).icon} size={on ? 18 : 15} color={on ? "#fff" : s.guard ? "#C2571A" : "#191F28"} /></span>
               {named.has(s.id) && <span className="mk-name">{s.name.replace("○○", "")}</span>}
             </motion.button>
           );
@@ -53,10 +53,10 @@ export function MapScreen({ nav, ui }) {
       <Status onSecret={ui.secret} />
       <div className="search"><Icon d={I.search} size={20} w={2.4} /><span>업장 검색</span></div>
       <div className="chips">
-        <button className={`chip ${guardOnly ? "on guardf" : ""}`} onClick={() => setGuardOnly(!guardOnly)}><Icon d={I.check} size={14} color="#C2571A" w={3} />&nbsp;보장</button>
+        <button className={`chip ${guardOnly ? "on guardf" : ""}`} onClick={() => setGuardOnly(!guardOnly)}><PIcon n="check" size={14} color="#C2571A" />&nbsp;보장</button>
         {CATS.map((c) => (
           <button key={c.id} className={`chip ${cat === c.id ? "on" : ""} ${c.ready ? "" : "soon"}`} onClick={() => setCat(cat === c.id ? null : c.id)}>
-            <Icon d={I[c.icon]} size={15} color={cat === c.id ? "#fff" : "#4E5968"} />&nbsp;{c.label}
+            <PIcon n={c.icon} size={15} color={cat === c.id ? "#fff" : "#4E5968"} />&nbsp;{c.label}
           </button>
         ))}
       </div>
@@ -70,7 +70,7 @@ export function MapScreen({ nav, ui }) {
           <div><Sk w="55%" h={22} /><Sk w="40%" h={14} style={{ marginTop: 10 }} /><Sk h={48} r={14} style={{ marginTop: 16 }} /></div>
         ) : !sel ? (
           <div className="empty-cat">
-            {cat && !catOf(cat).ready ? <><Icon d={I[catOf(cat).icon]} size={28} color="#C2571A" /><b>{catOf(cat).label} 곧 추가돼요</b></> : <b>근처에 없어요</b>}
+            {cat && !catOf(cat).ready ? <><PIcon n={catOf(cat).icon} size={28} color="#C2571A" /><b>{catOf(cat).label} 곧 추가돼요</b></> : <b>근처에 없어요</b>}
             <button className="link" onClick={() => { setCat(null); setGuardOnly(false); }}>전체 보기</button>
           </div>
         ) : (
@@ -109,7 +109,7 @@ export function List({ nav }) {
             : data.shops.map((s) => (
               <button key={s.id} className="lrow" onClick={() => open(s)}>
                 <div style={{ flex: 1, textAlign: "left" }}>
-                  <div className="t16 b7" style={{ display: "flex", alignItems: "center", gap: 6 }}>{s.name}{s.guard && <Icon d={I.check} size={15} color="#C2571A" w={3} />}</div>
+                  <div className="t16 b7" style={{ display: "flex", alignItems: "center", gap: 6 }}>{s.name}{s.guard && <PIcon n="check" size={15} color="#C2571A" />}</div>
                   <div className="t13 ter" style={{ marginTop: 3 }}>{s.dist}m · 영업 {s.years}년째</div>
                 </div>
                 <span className={`chipg ${s.tier === "small" ? "dark" : ""}`}>{TIERS[s.tier].label} · {s.pyeong}평</span>
