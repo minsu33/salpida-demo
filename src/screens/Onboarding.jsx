@@ -6,7 +6,7 @@ import { useStore } from "../lib/store.jsx";
 // 처음 설치했을 때만: 스플래시 → 소개 카드 3장 → 권한 요청. 다음부터는 Splash만 잠깐.
 const SLIDES = [
   { k: "결제 전", t: "이 업장, 크기부터\n살펴봐요", s: "작은 업장은 폐업이 약 2배" },
-  { k: "결제할 때", t: "카드로 내면\n절반은 따로 보관돼요", s: "업장이 닫으면 보관된 돈이 환불돼요" },
+  { k: "결제할 때", t: "안심결제면\n닫혀도 전액 돌려받아요", s: "절반은 보관, 나머지는 살피다 보장" },
   { k: "결제 후", t: "닫히면\n바로 알려 드려요", s: "환불까지 챙겨 드려요" },
 ];
 
@@ -21,8 +21,8 @@ function Art({ i }) {
   );
   if (i === 1) return (
     <div className="art-card" style={{ padding: 16 }}>
-      <div className="opt on" style={{ margin: 0 }}><span className="radio" /><div style={{ flex: 1 }}><b>안심결제<em>추천</em></b><span>절반은 결제대행사가 보관</span></div></div>
-      <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />닫히면 보관된 30만 원 환불</div>
+      <div className="opt on" style={{ margin: 0 }}><span className="radio" /><div style={{ flex: 1 }}><b>안심결제<em>추천</em></b><span>닫히면 전액 환불</span></div></div>
+      <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />닫히면 남은 이용료 전액 환불</div>
     </div>
   );
   return (
@@ -32,7 +32,7 @@ function Art({ i }) {
         <div style={{ flex: 1 }}>
           <div className="row" style={{ fontSize: 12 }}><b>살피다</b><span className="ter">지금</span></div>
           <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>○○피트니스 F점 폐업이 등록됐어요</div>
-          <div style={{ fontSize: 12, color: "#C2571A", marginTop: 1, fontWeight: 600 }}>보관된 23만 원 자동 환불</div>
+          <div style={{ fontSize: 12, color: "#C2571A", marginTop: 1, fontWeight: 600 }}>남은 45만 원 전액 환불</div>
         </div>
       </div>
       <div className="art-card" style={{ marginTop: 12, background: "#191F28", color: "#fff" }}>

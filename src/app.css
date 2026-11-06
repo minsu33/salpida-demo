@@ -309,3 +309,4 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .rbar i:first-child { flex: 1; background: var(--acc); } .rbar i:last-child { flex: 1; background: #C9CED4; }
 .actbtn { min-width: 96px; }
 .skipper { background: rgba(25, 31, 40, .92); }
+.rbar.full i:last-child { background: #F0B48C; } .rsplit .h2 i { background: #F0B48C; } .rsplit .h2 span { color: var(--acc); }

@@ -27,13 +27,13 @@ export function Pass({ nav, ui }) {
               </div>
               <div className="t14" style={{ opacity: 0.65, marginTop: 6 }}>{closed ? "환불 진행 중" : "영업 상태 주 1회 확인"}</div>
               <div className="p"><i style={{ width: `${(100 * p.daysLeft) / PASS.days}%`, background: closed ? "#5B616B" : undefined }} /></div>
-              <div className="row t14" style={{ opacity: 0.8 }}>{closed ? <><span>이용 중단</span><span>{p.pay?.method === "안심결제" ? `환불 ${won(held(p.daysLeft, p.pay?.amount))}` : "할 일 확인하기"}</span></> : <><span>{p.daysLeft}일 남음</span><span>남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))}</span></>}</div>
+              <div className="row t14" style={{ opacity: 0.8 }}>{closed ? <><span>이용 중단</span><span>{p.pay?.method === "안심결제" ? `환불 ${won(remain(p.daysLeft, p.pay?.amount))}` : "할 일 확인하기"}</span></> : <><span>{p.daysLeft}일 남음</span><span>남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))}</span></>}</div>
             </div>
             <div className="proof">
               <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">환불 신청에 쓰는 기록</span></div>
               <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "안심결제" ? "안심결제 · " : ""}{p.pay?.months ? `카드 ${p.pay.months}개월 할부` : "카드 일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
               {p.pay?.method === "안심결제" ? (
-                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />{closed ? `환불 진행 중 · ${won(held(p.daysLeft, p.pay?.amount))}` : `환불 보장 ${won(held(p.daysLeft, p.pay?.amount))} · 결제대행사 보관`}</div>
+                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />{closed ? `환불 진행 중 · ${won(remain(p.daysLeft, p.pay?.amount))} 전액` : "살피다 보장 · 닫히면 남은 이용료 전액"}</div>
               ) : (
                 <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
                   <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
@@ -115,23 +115,19 @@ export function Alert({ nav, ui, params }) {
         <div className="pad">
           <span className={`tagc ${a.kind}`}>{t.tag}</span>
           <div className="t26" style={{ marginTop: 12 }}>{p.shop.name}<br />{t.title}</div>
-          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? "남은 이용료의 절반이 자동으로 돌아와요." : t.body}</div>
+          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? "남은 이용료 전액이 자동으로 돌아와요." : t.body}</div>
         </div>
         {a.kind === "closed" && p.pay?.method === "안심결제" ? (
           <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <span>자동으로 돌려받는 돈</span>
-            <b>{won(held(p.daysLeft, p.pay?.amount))}</b>
-            <div className="rbar"><i /><i /></div>
+            <b>{won(remain(p.daysLeft, p.pay?.amount))}</b>
+            <div className="rbar full"><i /><i /></div>
             <div className="rsplit">
-              <div className="h"><i /><span>돌려받을 돈 {won(held(p.daysLeft, p.pay?.amount))}</span></div>
-              <div className="g"><i /><span>이미 업장에 전달된 돈 {Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) - Math.round(held(p.daysLeft, p.pay?.amount) / 1e4)}만 원</span></div>
+              <div className="h"><i /><span>결제대행사 보관금 {won(held(p.daysLeft, p.pay?.amount))}</span></div>
+              <div className="h2"><i /><span>살피다 보장(보험) {Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) - Math.round(held(p.daysLeft, p.pay?.amount) / 1e4)}만 원</span></div>
             </div>
-            <div className="t13 sub">남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))} 기준</div>
-            <div className="rsteps">{["폐업 확인", "업장에 보내던 돈 멈춤", "결제한 카드로 환불"].map((x, i) => <div key={x} className={i < 2 ? "done" : "now"}><i>{i < 2 ? "✓" : ""}</i>{x}</div>)}</div>
-            {canObject(p.pay) && <>
-              <div className="t14" style={{ marginTop: 6, lineHeight: 1.5 }}>할부로 냈다면, 업장이 받아 간 돈 중 <span className="acc b7" style={{ display: "inline" }}>아직 안 낸 할부</span>는 멈출 수 있어요</div>
-              <button className="actbtn" style={{ alignSelf: "flex-start", marginLeft: 0 }} onClick={() => ui.copy(`${p.shop.name}이 폐업해 남은 할부금 지급 거절(항변권)을 요청합니다.`)}>카드사 요청 문구 복사</button>
-            </>}
+            <div className="t13 sub">남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))} 전액</div>
+            <div className="rsteps">{["폐업 확인", "보관금 환불", "보험금 지급"].map((x, i) => <div key={x} className={i < 2 ? "done" : "now"}><i>{i < 2 ? "✓" : ""}</i>{x}</div>)}</div>
           </motion.div>
         ) : (<>
         {a.kind === "signal" && (
@@ -181,7 +177,7 @@ export function Record({ nav }) {
           <div className="row t12 ter" style={{ marginTop: 6 }}><span>1년 전</span><span className="acc b7">최근 3개월 0건</span></div>
         </div>
         <div className="pad" style={{ marginTop: 14 }}>
-          {(closedRec ? [{ m: "2월", t: "인허가에 폐업 등록", s: "보관된 돈 자동 환불", hot: true }, ...RECORD.log] : RECORD.log).map((l) => <div className="ti" key={l.m + l.t}><div className="d" style={l.hot ? { background: "var(--acc)" } : undefined} /><div className="m">{l.m}</div><div><b>{l.t}</b><span>{l.s}</span></div></div>)}
+          {(closedRec ? [{ m: "2월", t: "인허가에 폐업 등록", s: "남은 이용료 전액 환불", hot: true }, ...RECORD.log] : RECORD.log).map((l) => <div className="ti" key={l.m + l.t}><div className="d" style={l.hot ? { background: "var(--acc)" } : undefined} /><div className="m">{l.m}</div><div><b>{l.t}</b><span>{l.s}</span></div></div>)}
         </div>
               </div>
     </div>
