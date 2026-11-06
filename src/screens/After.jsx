@@ -33,7 +33,7 @@ export function Pass({ nav, ui }) {
               <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">닫히면 증거</span></div>
               <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method || "일시불"}{p.pay?.months ? ` · ${p.pay.months}개월 할부` : ""} · {p.pay?.date ? md(p.pay.date) : ""}</div>
               {p.pay?.method === "안심결제" ? (
-                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />맡겨 둔 돈 {won(held(p.daysLeft))} · 닫히면 환불</div>
+                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />보관 중 {won(held(p.daysLeft))} · 닫히면 자동 환불</div>
               ) : (
                 <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
                   <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
@@ -112,7 +112,7 @@ export function Alert({ nav, ui, params }) {
         <div className="pad">
           <span className={`tagc ${a.kind}`}>{t.tag}</span>
           <div className="t26" style={{ marginTop: 12 }}>{p.shop.name}<br />{t.title}</div>
-          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? "남은 돈은 맡겨 둔 곳에서 돌아와요." : t.body}</div>
+          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? "결제대행사가 보관한 돈이 돌아와요." : t.body}</div>
         </div>
         {a.kind === "closed" && p.pay?.method === "안심결제" ? (
           <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
