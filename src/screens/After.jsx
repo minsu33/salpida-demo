@@ -127,7 +127,16 @@ export function Alert({ nav, ui, params }) {
             <span>결제한 카드로 환불</span>
             {canObject(p.pay) && <button className="actbtn" style={{ alignSelf: "flex-start", marginTop: 8 }} onClick={() => ui.copy(`${p.shop.name}이 폐업해 남은 할부금 지급 거절(항변권)을 요청합니다.`)}>남은 할부 멈추기</button>}
           </motion.div>
-        ) : (
+        ) : (<>
+        {a.kind === "signal" && (
+          <div className="key sig" style={{ marginTop: 20 }}>
+            <div className="row"><b className="t15">사장님 글</b><span className="t13 acc b7">최근 3개월 0건</span></div>
+            <div className="bars">
+              {RECORD.posts.map((v, i) => <motion.i key={i} className={v ? "" : "zero"} initial={{ height: 0 }} animate={{ height: v ? `${v}%` : 10 }} transition={{ delay: 0.03 * i, duration: 0.4 }} />)}
+            </div>
+            <div className="row t12 ter" style={{ marginTop: 6 }}><span>1년 전</span><span>지금</span></div>
+          </div>
+        )}
         <div className="pad" style={{ marginTop: 26 }}>
           <div className="t18 b7">지금 할 일</div>
           {todos.map((x, i) => (
@@ -138,7 +147,7 @@ export function Alert({ nav, ui, params }) {
             </motion.div>
           ))}
         </div>
-        )}
+        </>)}
         {a.kind === "signal" && <div className="pad"><button className="rowlink" onClick={() => nav.go("record")}><span>왜 이런 알림이 왔나요?</span><span className="ter">업장 기록 보기 ›</span></button></div>}
       </div>
     </div>
