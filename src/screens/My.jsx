@@ -18,21 +18,16 @@ export function My({ nav, ui }) {
       <div className="scroll">
         <Status onSecret={ui.secret} />
         <div className="pad t26" style={{ paddingTop: 14 }}>MY</div>
-        <div className="mystats">
-          <div><b>{(state.viewed || []).length}</b><span>살펴본 업장</span></div>
-          <div><b>{state.checked || 0}</b><span>결제 준비</span></div>
-          <div><b>{state.pass ? 1 : 0}</b><span>지켜보는 이용권</span></div>
-        </div>
         <div className="watch" style={{ marginTop: 26 }}>
           <div className="t18 b7">알림</div>
           <Toggle k="closed" label="폐업·휴업 등록" sub="바로 알림" />
-          <Toggle k="change" label="면적·대표자 변경" sub="주 1회" />
+          <Toggle k="change" label="업장 정보가 바뀌면" sub="주 1회" />
           <Toggle k="signal" label="참고 신호" sub="앱 안에만 · 푸시 없음" />
         </div>
         <div className="pad" style={{ marginTop: 26 }}>
           <div className="t18 b7">데이터</div>
           <div className="ti"><div><b>업장 정보 출처</b><span>{meta ? `${meta.source} · ${md(meta.updatedAt)} 기준` : "불러오는 중"}</span></div></div>
-          <div className="ti"><div><b>크기 안내 기준</b><span>인허가 10년치</span></div></div>
+          <div className="ti"><div><b>크기 안내 기준</b><span>서울·경기 공개 자료 10년</span></div></div>
           <button className="rowlink" onClick={() => ui.toast("정정 요청을 보냈어요 (시연)")}><span>정보 정정 요청</span><Icon d={I.arrow} size={18} color="#8B95A1" /></button>
         </div>
         <div className="pad t12 ter" style={{ marginTop: 22 }}>살피다 0.3 · 업장 상호는 가려서 보여 줘요</div>

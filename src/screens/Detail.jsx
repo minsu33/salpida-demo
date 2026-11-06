@@ -35,7 +35,7 @@ export function Detail({ nav }) {
 
             <div className="pad" style={{ marginTop: 26 }}>
               <div className="t14 sub b7">폐업 차이가 난 점 · 크기</div>
-              <div className="t20" style={{ marginTop: 4 }}>약 {shop.pyeong}평 · {t.label}{shop.tier === "small" && <span className="acc"> · 폐업 약 2배</span>}</div>
+              <div className="t20" style={{ marginTop: 4 }}>약 {shop.pyeong}평 · {t.label}</div>
                             <div style={{ marginTop: 6 }}>
                 {Object.entries(TIERS).map(([k, v]) => (
                   <div key={k} className={`tier ${k === shop.tier ? "mine" : ""}`}>
@@ -45,7 +45,8 @@ export function Detail({ nav }) {
                   </div>
                 ))}
               </div>
-              <div className="t12 ter" style={{ marginTop: 10 }}>같은 크기 업장들의 1년 폐업 · 인허가 10년치</div>
+              <div className="t14 sub" style={{ marginTop: 10 }}>{shop.tier === "small" ? "작은 업장은 큰 업장보다 1년 안에 닫은 비율이 약 2배" : TIERS[shop.tier].note}</div>
+              <div className="t12 ter" style={{ marginTop: 4 }}>서울·경기 공개 자료 10년 · 이 업장이 닫는다는 뜻은 아니에요</div>
             </div>
 
             <div className="pad" style={{ marginTop: 26 }}>
@@ -66,7 +67,7 @@ export function Detail({ nav }) {
           </div>
         )}
       </div>
-      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("prep")}>결제 준비하기</button></div>
+      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay")}>결제 방법 고르기</button></div>
     </div>
   );
 }

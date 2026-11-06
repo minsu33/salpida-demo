@@ -24,7 +24,7 @@ export const held = (daysLeft) => remain(daysLeft) * 0.5;
 export const refundIfQuit = (price, usedDays) => Math.max(0, price - (price * usedDays) / PASS.days - price * 0.1);
 // 업장이 고른 '돈 지키는 수단'. 안심결제: 결제대행사가 맡아 매달 나눠 정산 / 보증보험: 닫으면 보험사가 환급 (시연용 가정)
 export const PROTECT = {
-  escrow: { name: "안심결제", short: "절반 보관", body: "닫히면 보관된 돈 자동 환불" },
+  escrow: { name: "안심결제", short: "절반 보관", body: "결제 금액 절반을 결제대행사가 보관" },
   insurance: { name: "보증보험", short: "보험사 가입", body: "닫히면 보험사가 환급" },
 };
 // 할부 항변: 20만 원 이상, 3개월 이상 신용카드 할부

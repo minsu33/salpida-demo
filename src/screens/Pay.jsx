@@ -63,7 +63,7 @@ export function Pay({ nav, ui }) {
             <div className="t14 sub b6" style={{ marginTop: 20 }}>결제 방식</div>
             <div className="paykind">
               <button className={es ? "on" : ""} onClick={() => setEs(true)}><b>안심결제<em>추천</em></b><span>절반은 결제대행사가 보관</span></button>
-              <button className={!es ? "on" : ""} onClick={() => setEs(false)}><b>일반 결제</b><span>업장이 한 번에 받음</span></button>
+              <button className={!es ? "on" : ""} onClick={() => setEs(false)}><b>일반 결제</b><span>업장에 전액</span></button>
             </div>
             {es && <Split amount={amount} />}
           </>}
@@ -75,7 +75,7 @@ export function Pay({ nav, ui }) {
           {lines.length ? lines.map((l) => <b key={l}><Icon d={I.check} size={18} color="#C2571A" w={2.8} />{l}</b>) : <b>돌려받기 어려워요</b>}
         </motion.div>
       </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? "카운터 QR로 결제하기" : "결제하고 등록하기"}</button></div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? "안심결제로 결제하기" : "결제하고 등록하기"}</button></div>
     </div>
   );
 }
@@ -100,16 +100,16 @@ export function Qr({ nav, ui, params }) {
     <div className="s">
       <div className="scroll">
         <Status /><Back onBack={nav.back} />
-        <div className="pad"><div className="t26">카운터 QR로 결제</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {won(pay.amount)}</div></div>
+        <div className="pad"><div className="t26">직원에게 보여 주세요</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {won(pay.amount)}</div></div>
         <div className="qr">{QR.map((on, i) => <i key={i} className={on ? "on" : ""} />)}</div>
         <div className="steps">
-          {[["phone", "QR 찍기"], ["card", pay.months ? `카드 ${pay.months}개월` : "카드 일시불"], ["shield", "안심결제"]].map(([ic, t], i) => (
+          {[["phone", "화면 보여 주기"], ["card", pay.months ? `카드 ${pay.months}개월` : "카드 일시불"], ["shield", "안심결제"]].map(([ic, t], i) => (
             <div key={t} className="step"><span><Icon d={I[ic]} size={22} color={i === 2 ? "#C2571A" : "#191F28"} /></span><b>{t}</b></div>
           ))}
         </div>
         <div className="pad"><Split amount={pay.amount} /></div>
               </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={done}>결제 완료 (시연)</button></div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={done}>결제 완료</button></div>
     </div>
   );
 }
