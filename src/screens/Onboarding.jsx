@@ -45,7 +45,7 @@ function Art({ i }) {
 
 export function Splash({ nav }) {
   useEffect(() => { const t = setTimeout(() => nav.tab("map"), 700); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살피다<span /></div></div>;
+  return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살피다<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
 }
 
 export function Onboarding({ nav }) {
@@ -61,7 +61,7 @@ export function Onboarding({ nav }) {
   const next = () => (i < SLIDES.length - 1 ? setI(i + 1) : setStep("perm"));
   const up = () => { if (dx < -50) next(); else if (dx > 50 && i > 0) setI(i - 1); x0.current = null; setDx(0); };
 
-  if (step === "splash") return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살피다<span /></div></div>;
+  if (step === "splash") return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살피다<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
 
   if (step === "perm") return (
     <div className="s">

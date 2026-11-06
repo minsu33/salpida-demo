@@ -122,7 +122,7 @@ function Shell() {
                     <div className="t15 b7" style={{ marginTop: 3 }}>{pushShop.name} {push.kind === "closed" ? "폐업이 등록됐어요" : ALERT_TEXT[push.kind].title}</div>
                     {push.kind === "closed" && state.pass?.pay?.method === "안심결제"
                       ? <div className="t14 acc b7" style={{ marginTop: 2 }}>보관된 {won(held(state.pass.daysLeft, state.pass.pay?.amount))} 자동 환불</div>
-                      : <div className="t14 sub" style={{ marginTop: 2 }}>{push.kind === "closed" && canObject(state.pass?.pay) ? "남은 할부를 멈출 수 있어요" : ALERT_TEXT[push.kind].tag}</div>}
+                      : <div className="t14 sub" style={{ marginTop: 2 }}>{push.kind === "closed" && state.pass?.shop?.protect === "insurance" ? "보증보험으로 환급받을 수 있어요" : push.kind === "closed" && canObject(state.pass?.pay) ? "남은 할부를 멈출 수 있어요" : ALERT_TEXT[push.kind].tag}</div>}
                   </div>
                 </motion.div>
               )}

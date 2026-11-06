@@ -31,7 +31,7 @@ export function Prep({ nav }) {
         </div>
         <div className="hint">
           <Icon d={I.card} size={20} color="#C2571A" />
-          <span>{shop.protect === "escrow" ? "안심결제면 닫혀도 맡긴 돈 환불" : shop.guard ? "할부로 내면 한 번 더 안전" : "지킬 수단 없음 → 할부가 가장 중요"}</span>
+          <span>{shop.protect === "escrow" ? "안심결제면 닫혀도 보관된 돈 환불" : shop.guard ? "할부로 내면 한 번 더 안전" : "지킬 수단 없음 → 할부가 가장 중요"}</span>
         </div>
       </div>
       <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={() => nav.go("pay")}>결제 방법 고르기</button></div>
@@ -50,7 +50,7 @@ export function Pay({ nav, ui }) {
   const method = es ? "안심결제" : months ? "할부" : "일시불";
   const pay = { method, months, amount, date: new Date().toISOString().slice(0, 10) };
   const stop = canObject(pay);
-  const lines = [es && `보관된 돈 자동 환불 (최대 ${man(amount / 2)} 원)`, stop && "남은 할부 멈춤"].filter(Boolean);
+  const lines = [es && `보관된 돈 자동 환불 (최대 ${man(amount / 2)} 원)`, state.shop.protect === "insurance" && "보증보험으로 환급", stop && "남은 할부 멈춤"].filter(Boolean);
   const submit = () => nav.go("qr", { pay });
   return (
     <div className="s">
