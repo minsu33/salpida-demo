@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { TIERS, PASS, PROTECT, won, man, refundIfQuit, canObject } from "../data.js";
 import { Icon, I, Status, Back } from "../components.jsx";
@@ -75,7 +75,7 @@ export function Pay({ nav, ui }) {
           {lines.length ? lines.map((l) => <b key={l}><Icon d={I.check} size={18} color="#C2571A" w={2.8} />{l}</b>) : <b>{months && amount < 200000 ? "20만 원 미만은 할부 멈춤이 안 돼요" : "돌려받기 어려워요"}</b>}
         </motion.div>
       </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? "안심결제로 결제하기" : "카운터에서 결제하기"}</button></div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? "카운터 QR 찍고 결제하기" : "카운터에서 결제하기"}</button></div>
     </div>
   );
 }
@@ -96,23 +96,41 @@ export function Qr({ nav, ui, params }) {
   const { state, dispatch } = useStore();
   const pay = params.pay;
   const es = pay.method === "안심결제";
+  const [step, setStep] = useState(es ? "scan" : "pay");
+  useEffect(() => { if (step !== "scan") return; const t = setTimeout(() => setStep("pay"), 1600); return () => clearTimeout(t); }, [step]);
   const done = () => { dispatch({ type: "register", pay }); ui.registered(); };
-  const card = pay.months ? `카드 ${pay.months}개월` : "카드 일시불";
+  const card = pay.months ? `${pay.months}개월 할부` : "일시불";
+  // 안심결제: 카운터에 놓인 업장 QR을 손님이 찍는다 → 결제대행사 결제창에서 카드로 낸다
+  if (step === "scan") return (
+    <div className="s scanner" onClick={() => setStep("pay")}>
+      <Status dark /><Back onBack={nav.back} />
+      <div className="t26" style={{ color: "#fff", textAlign: "center", marginTop: 30 }}>카운터 QR을 찍어 주세요</div>
+      <div className="t14" style={{ color: "#fff", opacity: 0.6, textAlign: "center", marginTop: 8 }}>{state.shop.name} 계산대</div>
+      <div className="finder"><div className="qr" style={{ margin: 0, background: "#fff" }}>{QR.map((on, i) => <i key={i} className={on ? "on" : ""} />)}</div><span className="scanline" /></div>
+    </div>
+  );
   return (
     <div className="s">
       <div className="scroll">
         <Status /><Back onBack={nav.back} />
-        <div className="pad"><div className="t26">{es ? "직원에게 보여 주세요" : "카운터에서 카드로 내세요"}</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {won(pay.amount)}</div></div>
-        {es ? <div className="qr">{QR.map((on, i) => <i key={i} className={on ? "on" : ""} />)}</div>
-          : <div className="cardpay"><Icon d={I.card} size={64} color="#191F28" w={1.6} /></div>}
-        <div className="steps">
-          {(es ? [["phone", "화면 보여 주기"], ["card", card], ["shield", "안심결제"]] : [["card", card], ["doc", "결제 기록"], ["bell", "폐업 알림"]]).map(([ic, t], i) => (
-            <div key={t} className="step"><span><Icon d={I[ic]} size={22} color={i === 2 ? "#C2571A" : "#191F28"} /></span><b>{t}</b></div>
-          ))}
-        </div>
-        {es && <div className="pad"><Split amount={pay.amount} /></div>}
+        {es ? <>
+          <div className="pad"><div className="t14 acc b7">안심결제 · 결제대행사</div><div className="t26" style={{ marginTop: 6 }}>{state.shop.name}</div></div>
+          <div className="paysum">
+            <div className="row"><span>결제 금액</span><b>{won(pay.amount)}</b></div>
+            <div className="row"><span>카드</span><b>내 카드 · {card}</b></div>
+          </div>
+          <div className="pad"><Split amount={pay.amount} /></div>
+        </> : <>
+          <div className="pad"><div className="t26">카운터에서 카드로 내세요</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {won(pay.amount)}</div></div>
+          <div className="cardpay"><Icon d={I.card} size={64} color="#191F28" w={1.6} /></div>
+          <div className="steps">
+            {[["card", `카드 ${card}`], ["doc", "결제 기록"], ["bell", "폐업 알림"]].map(([ic, t], i) => (
+              <div key={t} className="step"><span><Icon d={I[ic]} size={22} color={i === 2 ? "#C2571A" : "#191F28"} /></span><b>{t}</b></div>
+            ))}
+          </div>
+        </>}
       </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={done}>{es ? "결제 완료" : "결제했어요, 등록하기"}</button></div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={done}>{es ? `${won(pay.amount)} 결제하기` : "결제했어요, 등록하기"}</button></div>
     </div>
   );
 }

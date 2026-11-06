@@ -270,3 +270,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .key.sig .bars i:not(.zero) { background: #D9C2B3; }
 .todo > i { background: var(--acc-soft); color: var(--acc); }
 .cardpay { width: 180px; height: 180px; margin: 26px auto 0; border-radius: 24px; background: var(--card); display: flex; align-items: center; justify-content: center; }
+.scanner { background: #111; }
+.finder { position: relative; width: 250px; height: 250px; margin: 60px auto 0; display: flex; align-items: center; justify-content: center; border-radius: 24px; box-shadow: 0 0 0 3px var(--acc); }
+.scanline { position: absolute; left: 14px; right: 14px; height: 3px; background: var(--acc); border-radius: 2px; animation: scan 1.6s ease-in-out infinite; box-shadow: 0 0 12px var(--acc); }
+@keyframes scan { 0% { top: 20px } 50% { top: 226px } 100% { top: 20px } }
+.paysum { margin: 22px 20px 0; padding: 4px 18px; border-radius: 16px; background: var(--card); }
+.paysum .row { padding: 14px 0; } .paysum .row + .row { border-top: 1px solid var(--line); }
+.paysum span { font-size: 15px; color: var(--sub); } .paysum b { font-size: 17px; }
+.scanner .nav svg { stroke: #fff; }
