@@ -58,7 +58,9 @@ export function Pay({ nav, ui }) {
         <Status /><Back onBack={nav.back} />
         <div className="pad"><div className="t26">어떻게 결제할까요?</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {PASS.name}</div></div>
         <div className="pad" style={{ marginTop: 18 }}>
-          <label className="amt"><input inputMode="numeric" value={amount ? amount.toLocaleString() : ""} placeholder="0" onChange={(e) => setAmt(e.target.value)} onFocus={(e) => e.target.select()} /><span>원</span></label>
+          <div className="t14 sub b6">결제 금액</div>
+          <label className="amt"><input inputMode="numeric" value={amount ? amount.toLocaleString() : ""} placeholder="금액 입력" onChange={(e) => setAmt(e.target.value)} onFocus={(e) => e.target.select()} /><span>원</span><Icon d={I.pen} size={16} color="#8B95A1" /></label>
+          <div className="quick">{[300000, 600000, 1000000].map((v) => <button key={v} className={amount === v ? "on" : ""} onClick={() => setAmount(v)}>{man(v)} 원</button>)}</div>
           {escrow && <>
             <div className="t14 sub b6" style={{ marginTop: 20 }}>결제 방식</div>
             <div className="paykind">
@@ -67,8 +69,15 @@ export function Pay({ nav, ui }) {
             </div>
             {es && <Split amount={amount} />}
           </>}
-          <div className="t14 sub b6" style={{ marginTop: 20 }}>할부</div>
-          <div className="pills">{[0, 3, 6, 12].map((v) => <button key={v} className={months === v ? "on" : ""} onClick={() => setMonths(v)}>{v ? `${v}개월` : "일시불"}</button>)}</div>
+          {es ? <>
+            <div className="t14 sub b6" style={{ marginTop: 20 }}>할부</div>
+            <div className="pills">{[0, 3, 6, 12].map((v) => <button key={v} className={months === v ? "on" : ""} onClick={() => setMonths(v)}>{v ? `${v}개월` : "일시불"}</button>)}</div>
+            {months > 0 && amount > 0 && <div className="permonth">{months}개월 · 월 <b>{man(amount / months)} 원</b></div>}
+          </> : <>
+            <div className="t14 sub b6" style={{ marginTop: 20 }}>카드 단말기에서</div>
+            <div className="pills">{[0, 3].map((v) => <button key={v} className={(v ? months >= 3 : !months) ? "on" : ""} onClick={() => setMonths(v)}>{v ? "할부 3개월 이상" : "일시불"}</button>)}</div>
+            <div className="permonth">할부는 매장 단말기에서 골라요</div>
+          </>}
         </div>
         <motion.div key={lines.join()} className={`ifclose ${lines.length ? "" : "bad"}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
           <span>닫히면 내 돈은?</span>
@@ -85,7 +94,7 @@ export function Split({ amount }) {
   return (
     <div className="split2">
       <div className="sbar"><i /><i /></div>
-      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">결제대행사 보관 <b>{man(amount / 2)} 원</b></span></div>
+      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">보관 <b>{man(amount / 2)} 원</b> → 매달 {man(amount / 2 / 12)} 원씩 업장으로</span></div>
     </div>
   );
 }
