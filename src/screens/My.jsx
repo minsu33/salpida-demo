@@ -30,7 +30,7 @@ export function My({ nav, ui }) {
           <div className="ti"><div><b>크기 안내 기준</b><span>서울·경기 공개 자료 10년</span></div></div>
           <button className="rowlink" onClick={() => ui.toast("정정 요청을 보냈어요 (시연)")}><span>정보 정정 요청</span><Icon d={I.arrow} size={18} color="#8B95A1" /></button>
         </div>
-        <div className="pad t12 ter" style={{ marginTop: 22 }}>살피다 0.3 · 업장 상호는 가려서 보여 줘요</div>
+        <div className="pad t12 ter" style={{ marginTop: 22 }}>살핌 0.3 · 업장 상호는 가려서 보여 줘요</div>
       </div>
       <Tab active="my" go={nav.tab} unread={state.alerts.filter((a) => !a.read).length} />
     </div>

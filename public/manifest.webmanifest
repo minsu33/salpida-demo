@@ -1,6 +1,6 @@
 {
-  "name": "살피다",
-  "short_name": "살피다",
+  "name": "살핌",
+  "short_name": "살핌",
   "description": "선결제 하기 전에, 업장부터 살펴보세요",
   "start_url": "/",
   "display": "standalone",

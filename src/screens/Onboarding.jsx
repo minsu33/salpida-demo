@@ -6,7 +6,7 @@ import { useStore } from "../lib/store.jsx";
 // 처음 설치했을 때만: 스플래시 → 소개 카드 3장 → 권한 요청. 다음부터는 Splash만 잠깐.
 const SLIDES = [
   { k: "결제 전", t: "이 업장, 크기부터\n살펴봐요", s: "작은 업장은 폐업이 약 2배" },
-  { k: "결제할 때", t: "안심결제면\n닫혀도 전액 돌려받아요", s: "절반은 보관, 나머지는 살피다 보장" },
+  { k: "결제할 때", t: "안심결제면\n닫혀도 전액 돌려받아요", s: "절반은 보관, 나머지는 살핌 보장" },
   { k: "결제 후", t: "닫히면\n바로 알려 드려요", s: "환불까지 챙겨 드려요" },
 ];
 
@@ -30,7 +30,7 @@ function Art({ i }) {
       <div className="art-push">
         <div className="appic"><Mark size={30} /></div>
         <div style={{ flex: 1 }}>
-          <div className="row" style={{ fontSize: 12 }}><b>살피다</b><span className="ter">지금</span></div>
+          <div className="row" style={{ fontSize: 12 }}><b>살핌</b><span className="ter">지금</span></div>
           <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>○○피트니스 F점 폐업이 등록됐어요</div>
           <div style={{ fontSize: 12, color: "#C2571A", marginTop: 1, fontWeight: 600 }}>남은 45만 원 전액 환불</div>
         </div>
@@ -45,7 +45,7 @@ function Art({ i }) {
 
 export function Splash({ nav }) {
   useEffect(() => { const t = setTimeout(() => nav.tab("map"), 700); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살피다<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
+  return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살핌<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
 }
 
 export function Onboarding({ nav }) {
@@ -61,13 +61,13 @@ export function Onboarding({ nav }) {
   const next = () => (i < SLIDES.length - 1 ? setI(i + 1) : setStep("perm"));
   const up = () => { if (dx < -50) next(); else if (dx > 50 && i > 0) setI(i - 1); x0.current = null; setDx(0); };
 
-  if (step === "splash") return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살피다<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
+  if (step === "splash") return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살핌<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
 
   if (step === "perm") return (
     <div className="s">
       <Status />
       <div style={{ padding: "48px 24px 0" }}>
-        <div className="t26">살피다를 쓰려면<br />두 가지만 허용해 주세요</div>
+        <div className="t26">살핌을 쓰려면<br />두 가지만 허용해 주세요</div>
         {[["위치", "내 주변 업장을 지도에 보여 줘요", I.pin], ["알림", "업장이 닫으면 바로 알려 줘요", I.bell]].map(([b, s, d]) => (
           <div className="ob" key={b} style={{ marginTop: 22 }}><div className="obi"><Icon d={d} color="#C2571A" w={2.2} /></div><div><b>{b}</b><span>{s}</span></div></div>
         ))}
@@ -76,7 +76,7 @@ export function Onboarding({ nav }) {
       {ask && (
         <div className="sys-dim">
           <div className="sys">
-            <b>'살피다'에서 알림을 보내고자 합니다</b>
+            <b>'살핌'에서 알림을 보내고자 합니다</b>
             <p>등록한 업장에 폐업이 등록되면 알려 드려요.</p>
             <div className="sys-btns"><span onClick={start}>허용 안 함</span><span style={{ fontWeight: 700 }} onClick={start}>허용</span></div>
           </div>

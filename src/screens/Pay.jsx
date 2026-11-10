@@ -50,7 +50,7 @@ export function Pay({ nav, ui }) {
   const method = es ? "안심결제" : months ? "할부" : "일시불";
   const pay = { method, months, amount, date: new Date().toISOString().slice(0, 10) };
   const stop = canObject(pay);
-  const lines = [es && "남은 이용료 전액 환불 (살피다 보장)", state.shop.protect === "insurance" && "보증보험으로 환급", !es && stop && "남은 할부 멈춤 요청 가능"].filter(Boolean);
+  const lines = [es && "남은 이용료 전액 환불 (살핌 보장)", state.shop.protect === "insurance" && "보증보험으로 환급", !es && stop && "남은 할부 멈춤 요청 가능"].filter(Boolean);
   const submit = () => nav.go("qr", { pay });
   return (
     <div className="s">

@@ -33,7 +33,7 @@ export function Pass({ nav, ui }) {
               <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">환불 신청에 쓰는 기록</span></div>
               <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "안심결제" ? "안심결제 · " : ""}{p.pay?.months ? `카드 ${p.pay.months}개월 할부` : "카드 일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
               {p.pay?.method === "안심결제" ? (
-                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />{closed ? `환불 진행 중 · ${won(remain(p.daysLeft, p.pay?.amount))} 전액` : "살피다 보장 · 닫히면 남은 이용료 전액"}</div>
+                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />{closed ? `환불 진행 중 · ${won(remain(p.daysLeft, p.pay?.amount))} 전액` : "살핌 보장 · 닫히면 남은 이용료 전액"}</div>
               ) : (
                 <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
                   <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
@@ -124,7 +124,7 @@ export function Alert({ nav, ui, params }) {
             <div className="rbar full"><i /><i /></div>
             <div className="rsplit">
               <div className="h"><i /><span>결제대행사 보관금 {won(held(p.daysLeft, p.pay?.amount))}</span></div>
-              <div className="h2"><i /><span>살피다 보장(보험) {Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) - Math.round(held(p.daysLeft, p.pay?.amount) / 1e4)}만 원</span></div>
+              <div className="h2"><i /><span>살핌 보장(보험) {Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) - Math.round(held(p.daysLeft, p.pay?.amount) / 1e4)}만 원</span></div>
             </div>
             <div className="t13 sub">남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))} 전액</div>
             <div className="rsteps">{["폐업 확인", "보관금 환불", "보험금 지급"].map((x, i) => <div key={x} className={i < 2 ? "done" : "now"}><i>{i < 2 ? "✓" : ""}</i>{x}</div>)}</div>

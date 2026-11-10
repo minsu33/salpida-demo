@@ -123,7 +123,7 @@ function Shell() {
                   initial={{ y: -140 }} animate={{ y: 0, transition: { type: "spring", stiffness: 380, damping: 26 } }} exit={{ y: -160, transition: { duration: 0.25 } }}>
                   <div className="appic"><Mark size={30} /></div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="row t14"><b>살피다</b><span className="ter t13">지금</span></div>
+                    <div className="row t14"><b>살핌</b><span className="ter t13">지금</span></div>
                     <div className="t15 b7" style={{ marginTop: 3 }}>{pushShop.name} {push.kind === "closed" ? "폐업이 등록됐어요" : ALERT_TEXT[push.kind].title}</div>
                     {push.kind === "closed" && state.pass?.pay?.method === "안심결제"
                       ? <div className="t14 acc b7" style={{ marginTop: 2 }}>남은 {won(remain(state.pass.daysLeft, state.pass.pay?.amount))} 전액 환불</div>

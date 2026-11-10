@@ -5,7 +5,7 @@ import { Icon, I, PIcon, CATS, Status, Tab, Sk, md, Back } from "../components.j
 import { getShops } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
 
-// 지도: 핀은 업종 아이콘, 안심결제 업장(살피다 가맹)만 주황. 보증보험 업장은 상세에서만 보인다. 아래 시트를 위로 끌거나 '상세 보기'로 상세에 들어간다.
+// 지도: 핀은 업종 아이콘, 안심결제 업장(살핌 가맹)만 주황. 보증보험 업장은 상세에서만 보인다. 아래 시트를 위로 끌거나 '상세 보기'로 상세에 들어간다.
 export function MapScreen({ nav, ui }) {
   const { state, dispatch } = useStore();
   const [data, setData] = useState(null);
