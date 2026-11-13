@@ -3,7 +3,7 @@
 
 export const TIERS = {
   small: { label: "작은 편", bar: 92, tag: "약 2배", note: "같은 크기 업장들은 큰 업장보다 문을 닫는 일이 약 2배 많았어요" },
-  mid: { label: "중간", bar: 76, tag: "", note: "작은 업장과 큰 업장 사이예요" },
+  mid: { label: "중간", bar: 76, tag: "약 1.5배", note: "작은 업장과 큰 업장 사이예요" },
   large: { label: "큰 편", bar: 46, tag: "기준", note: "같은 크기 업장들은 문을 닫는 일이 가장 적었어요" },
 };
 
@@ -24,8 +24,8 @@ export const held = (daysLeft, price = PASS.price) => remain(daysLeft, price) * 
 export const refundIfQuit = (price, usedDays) => Math.max(0, price - (price * usedDays) / PASS.days - price * 0.1);
 // 업장이 고른 '돈 지키는 수단'. 안심결제: 결제대행사가 맡아 매달 나눠 정산 / 보증보험: 닫으면 보험사가 환급 (시연용 가정)
 export const PROTECT = {
-  escrow: { name: "안심결제", short: "전액 보장", body: "닫히면 남은 이용료 전액 환불 · 살핌 보장" },
-  insurance: { name: "보증보험", short: "보험사 가입", body: "닫히면 보험사가 환급" },
+  escrow: { name: "안심결제", short: "남은 이용료 전액 환불", body: "닫히면 남은 이용료 전액 환불 · 살핌 보장" },
+  insurance: { name: "보증보험", short: "보험사가 환급", body: "닫히면 보험사가 환급" },
 };
 // 할부 항변: 20만 원 이상, 3개월 이상 신용카드 할부
 export const canObject = (pay) => !!pay && (pay.method === "할부" || pay.method === "안심결제") && pay.amount >= 200000 && pay.months >= 3;

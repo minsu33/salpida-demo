@@ -5,9 +5,9 @@ import { useStore } from "../lib/store.jsx";
 
 // 처음 설치했을 때만: 스플래시 → 소개 카드 3장 → 권한 요청. 다음부터는 Splash만 잠깐.
 const SLIDES = [
-  { k: "결제 전", t: "이 업장, 크기부터\n살펴봐요", s: "작은 업장은 폐업이 약 2배" },
-  { k: "결제할 때", t: "안심결제면\n닫혀도 전액 돌려받아요", s: "절반은 보관, 나머지는 살핌 보장" },
-  { k: "결제 후", t: "닫히면\n바로 알려 드려요", s: "환불까지 챙겨 드려요" },
+  { k: "결제 전", t: "작은 업장은\n약 2배 더 닫았어요", s: "" },
+  { k: "결제할 때", t: "안심결제면\n닫혀도 전액 돌려받아요", s: "" },
+  { k: "결제 후", t: "닫히면\n바로 알려 드려요", s: "" },
 ];
 
 function Art({ i }) {
@@ -97,7 +97,6 @@ export function Onboarding({ nav }) {
               <div style={{ padding: "0 28px" }}>
                 <div className="t14 acc b7">{sl.k}</div>
                 <div className="t26" style={{ marginTop: 8, whiteSpace: "pre-line" }}>{sl.t}</div>
-                <div className="t16 sub" style={{ marginTop: 12, lineHeight: 1.55, whiteSpace: "pre-line" }}>{sl.s}</div>
               </div>
             </div>
           ))}

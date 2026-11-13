@@ -92,16 +92,17 @@ export function MapScreen({ nav, ui }) {
           </div>
         ) : (
           <>
-            <button className="nearby" onClick={() => nav.go("list")}>주변 헬스장 {data.shops.length}곳 목록</button>
             <div className="row" style={{ alignItems: "flex-start" }}>
               <div>
                 <div className="t20">{sel.name}</div>
-                <div className="t14 ter" style={{ marginTop: 4 }}>{catOf(sel.cat).label} · {sel.dist}m{sel.protect === "escrow" && <span className="acc b7"> · 안심결제</span>}</div>
+                <div className="t14 ter metaline" style={{ marginTop: 4 }}>{catOf(sel.cat).label} · {sel.dist}m{sel.protect === "escrow" && <span className="safe"><PIcon n="shield" size={14} color="#C2571A" />안심결제</span>}</div>
               </div>
-              <span className={`chipg ${sel.tier === "small" ? "dark" : ""}`}>{TIERS[sel.tier].label} · 약 {sel.pyeong}평</span>
+              <span className="chipg">{TIERS[sel.tier].label} · {sel.pyeong}평</span>
             </div>
-            <button className="btn acc-b" style={{ width: "100%", height: 50, marginTop: 14, fontSize: 16 }} onClick={open}>상세 보기</button>
-            <div className="t12 ter" style={{ marginTop: 10, textAlign: "center" }}>서울시 인허가 {md(data.meta.updatedAt)} 기준</div>
+            <div className="sheetbtns">
+              <button className="btn ghost" onClick={() => nav.go("list")}><Icon d={I.list} size={18} />목록 {data.shops.length}</button>
+              <button className="btn acc-b" onClick={open}>상세 보기</button>
+            </div>
           </>
         )}
       </motion.div>
@@ -120,16 +121,17 @@ export function List({ nav }) {
     <div className="s">
       <div className="scroll">
         <Status /><Back onBack={nav.back} />
-        <div className="pad"><div className="t26">주변 헬스장</div><div className="t14 ter" style={{ marginTop: 4 }}>가까운 순 · 서울시 인허가 기준</div></div>
+        <div className="pad"><div className="t26">주변 헬스장</div></div>
         <div className="pad" style={{ marginTop: 10 }}>
           {!data ? [0, 1, 2, 3, 4].map((k) => <div key={k} className="lrow"><div style={{ flex: 1 }}><Sk w="45%" h={18} /><Sk w="30%" h={13} style={{ marginTop: 8 }} /></div><Sk w={76} h={28} r={8} /></div>)
             : data.shops.map((s) => (
               <button key={s.id} className="lrow" onClick={() => open(s)}>
                 <div style={{ flex: 1, textAlign: "left" }}>
-                  <div className="t16 b7" style={{ display: "flex", alignItems: "center", gap: 6 }}>{s.name}{s.protect === "escrow" && <PIcon n="check" size={15} color="#C2571A" />}</div>
-                  <div className="t13 ter" style={{ marginTop: 3 }}>{s.dist}m · 영업 {s.years}년째</div>
+                  <div className="t16 b7">{s.name}</div>
+                  <div className="t13 ter metaline" style={{ marginTop: 3 }}>{s.dist}m · {s.years}년째{s.protect === "escrow" && <span className="safe"><PIcon n="shield" size={13} color="#C2571A" />안심결제</span>}</div>
                 </div>
-                <span className={`chipg ${s.tier === "small" ? "dark" : ""}`}>{TIERS[s.tier].label} · {s.pyeong}평</span>
+                <span className="chipg">{TIERS[s.tier].label} · {s.pyeong}평</span>
+                <Icon d={I.arrow} size={18} color="#B0B8C1" />
               </button>
             ))}
         </div>

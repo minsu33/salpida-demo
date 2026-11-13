@@ -50,7 +50,7 @@ export function Pay({ nav, ui }) {
   const method = es ? "안심결제" : months ? "할부" : "일시불";
   const pay = { method, months, amount, date: new Date().toISOString().slice(0, 10) };
   const stop = canObject(pay);
-  const lines = [es && "남은 이용료 전액 환불 (살핌 보장)", state.shop.protect === "insurance" && "보증보험으로 환급", !es && stop && "남은 할부 멈춤 요청 가능"].filter(Boolean);
+  const lines = [es && "남은 이용료 전액 환불", state.shop.protect === "insurance" && "보증보험으로 환급", !es && stop && "남은 할부 멈출 수 있어요"].filter(Boolean);
   const submit = () => nav.go("qr", { pay });
   return (
     <div className="s">
@@ -64,7 +64,7 @@ export function Pay({ nav, ui }) {
           {escrow && <>
             <div className="t14 sub b6" style={{ marginTop: 20 }}>결제 방식</div>
             <div className="paykind">
-              <button className={es ? "on" : ""} onClick={() => setEs(true)}><b>안심결제<em>추천</em></b><span>닫히면 전액 환불</span></button>
+              <button className={es ? "on" : ""} onClick={() => setEs(true)}><b>안심결제<em>추천</em></b><span>전액 환불 · 수수료 0원</span></button>
               <button className={!es ? "on" : ""} onClick={() => setEs(false)}><b>일반 결제</b><span>업장에 전액</span></button>
             </div>
             {es && <Split amount={amount} />}
@@ -76,12 +76,11 @@ export function Pay({ nav, ui }) {
           </> : <>
             <div className="t14 sub b6" style={{ marginTop: 20 }}>카드 단말기에서</div>
             <div className="pills">{[0, 3].map((v) => <button key={v} className={(v ? months >= 3 : !months) ? "on" : ""} onClick={() => setMonths(v)}>{v ? "할부 3개월 이상" : "일시불"}</button>)}</div>
-            <div className="permonth">할부는 매장 단말기에서 골라요</div>
           </>}
         </div>
         <motion.div key={lines.join()} className={`ifclose ${lines.length ? "" : "bad"}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
-          <span>닫히면 내 돈은?</span>
-          {lines.length ? lines.map((l) => <b key={l}><Icon d={I.check} size={18} color="#C2571A" w={2.8} />{l}</b>) : <b>{months && amount < 200000 ? "20만 원 미만은 할부 멈춤이 안 돼요" : "돌려받기 어려워요"}</b>}
+          <span>닫히면 내 돈은</span>
+          {lines.length ? lines.map((l) => <b key={l}><Icon d={I.shield} size={20} color="#C2571A" w={2.2} />{l}</b>) : <b>{months && amount < 200000 ? "20만 원 미만은 할부 멈춤이 안 돼요" : "돌려받기 어려워요"}</b>}
         </motion.div>
       </div>
       <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? "카운터 QR 찍고 결제하기" : "카운터에서 결제하기"}</button></div>
@@ -94,7 +93,7 @@ export function Split({ amount }) {
   return (
     <div className="split2">
       <div className="sbar"><i /><i /></div>
-      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">보관 <b>{man(amount / 2)} 원</b> → 매달 {man(amount / 2 / 12)} 원씩 업장으로</span></div>
+      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">보관 <b>{man(amount / 2)} 원</b> · 매달 {man(amount / 2 / 12)}씩 전달</span></div>
     </div>
   );
 }
@@ -115,7 +114,6 @@ export function Qr({ nav, ui, params }) {
       <Status dark /><Back onBack={nav.back} />
       <div className="t26" style={{ color: "#fff", textAlign: "center", marginTop: 30 }}>카운터 QR을 찍어 주세요</div>
       <div className="t14" style={{ color: "#fff", opacity: 0.6, textAlign: "center", marginTop: 8 }}>{state.shop.name} 계산대</div>
-      <div className="t14" style={{ color: "#fff", opacity: 0.6, textAlign: "center", marginTop: 4 }}>QR이 네모 안에 들어오게 해 주세요</div>
       <div className="finder"><div className="qr" style={{ margin: 0, background: "#fff" }}>{QR.map((on, i) => <i key={i} className={on ? "on" : ""} />)}</div><span className="scanline" /></div>
     </div>
   );
@@ -130,6 +128,7 @@ export function Qr({ nav, ui, params }) {
             <div className="row"><span>카드</span><b>내 카드 ···1234 · {card}</b></div>
           </div>
           <div className="pad"><Split amount={pay.amount} /></div>
+          <div className="ifclose"><span>닫히면 내 돈은</span><b><Icon d={I.shield} size={20} color="#C2571A" w={2.2} />남은 이용료 전액 환불</b></div>
         </> : <>
           <div className="pad"><div className="t26">카운터에서 카드로 내세요</div><div className="t15 sub" style={{ marginTop: 6 }}>{state.shop.name} · {won(pay.amount)}</div></div>
           <div className="cardpay"><Icon d={I.card} size={64} color="#191F28" w={1.6} /></div>

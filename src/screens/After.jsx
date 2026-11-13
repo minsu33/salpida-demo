@@ -25,15 +25,15 @@ export function Pass({ nav, ui }) {
                 <span style={{ width: 12, height: 12, borderRadius: 6, background: closed ? "#FF8A65" : "#3DD68C" }} />
                 <span className="t26" style={{ color: "#fff" }}>{closed ? "폐업 등록됨" : "영업 중"}</span>
               </div>
-              <div className="t14" style={{ opacity: 0.65, marginTop: 6 }}>{closed ? "환불 진행 중" : "영업 상태 주 1회 확인"}</div>
+              {closed && <div className="t14" style={{ opacity: 0.65, marginTop: 6 }}>환불 진행 중</div>}
               <div className="p"><i style={{ width: `${(100 * p.daysLeft) / PASS.days}%`, background: closed ? "#5B616B" : undefined }} /></div>
               <div className="row t14" style={{ opacity: 0.8 }}>{closed ? <><span>이용 중단</span><span>{p.pay?.method === "안심결제" ? `환불 ${won(remain(p.daysLeft, p.pay?.amount))}` : "할 일 확인하기"}</span></> : <><span>{p.daysLeft}일 남음</span><span>남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))}</span></>}</div>
             </div>
             <div className="proof">
-              <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">환불 신청에 쓰는 기록</span></div>
-              <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "안심결제" ? "안심결제 · " : ""}{p.pay?.months ? `카드 ${p.pay.months}개월 할부` : "카드 일시불"} · {p.pay?.date ? md(p.pay.date) : ""}</div>
+              <div className="row"><b className="t16">결제 기록</b><span className="t13 ter">{p.pay?.date ? md(p.pay.date) : ""}</span></div>
+              <div className="t15" style={{ marginTop: 10 }}>{won(p.pay?.amount || PASS.price)} · {p.pay?.method === "안심결제" ? "안심결제 · " : ""}{p.pay?.months ? `카드 ${p.pay.months}개월 할부` : "카드 일시불"}</div>
               {p.pay?.method === "안심결제" ? (
-                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />{closed ? `환불 진행 중 · ${won(remain(p.daysLeft, p.pay?.amount))} 전액` : "살핌 보장 · 닫히면 남은 이용료 전액"}</div>
+                <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.shield} size={17} color="#C2571A" w={2.2} />{closed ? `환불 진행 중 · ${won(remain(p.daysLeft, p.pay?.amount))} 전액` : "닫히면 남은 이용료 전액 환불"}</div>
               ) : (
                 <div className={`verdict ${canObject(p.pay) ? "good" : ""}`} style={{ marginTop: 12 }}>
                   <Icon d={canObject(p.pay) ? I.check : I.info} size={16} color={canObject(p.pay) ? "#C2571A" : "#4E5968"} w={2.6} />
@@ -43,7 +43,7 @@ export function Pass({ nav, ui }) {
               {p.shop.protect === "insurance" && <div className="verdict good" style={{ marginTop: 8 }}><Icon d={I.shield} size={16} color="#C2571A" w={2.4} />보증보험으로 남은 돈 환급</div>}
             </div>
             <div className="pad">
-              <button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록 보기</span><span className="ter">›</span></button>
+              <button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록</span><Icon d={I.arrow} size={18} color="#B0B8C1" /></button>
             </div>
           </>
         )}
@@ -72,16 +72,16 @@ export function Alerts({ nav, ui }) {
             return (
               <motion.div key={a.id} className={`acard ${a.kind}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} onClick={() => open(a)}>
                 <div className="row"><span className={`tagc ${a.kind}`}>{t.tag}</span>{!a.read && <i className="dot-new" />}</div>
-                <div className="t18 b7" style={{ marginTop: 10 }}>{p?.shop.name}<br />{t.title}</div>
-                <div className="t13 sub" style={{ marginTop: 6 }}>{t.body}</div>
-                <div className="abtns" onClick={(e) => e.stopPropagation()}>
-                  {a.kind === "signal" ? <button className="on" onClick={() => open(a)}>지금 할 일 보기</button> : <button className="on" onClick={() => open(a)}>{p?.pay?.method === "안심결제" ? "환불 보기" : "지금 할 일 보기"}</button>}
+                <div className="row" style={{ marginTop: 10, gap: 10 }}>
+                  <div className="t16 b7" style={{ lineHeight: 1.45 }}>{p?.shop.name}<br />{t.title}</div>
+                  <Icon d={I.arrow} size={20} color={a.kind === "closed" ? "#F04452" : "#C2571A"} />
                 </div>
+                {a.kind === "closed" && p?.pay?.method === "안심결제" && <div className="t14 b7 acc" style={{ marginTop: 8 }}>남은 {won(remain(p.daysLeft, p.pay?.amount))} 전액 환불</div>}
               </motion.div>
             );
           })}
           {p && <div className="t14 ter b7" style={{ marginTop: 22 }}>지난 기록</div>}
-          {p && [["11.6", "이용권 등록", PASS.name]].map(([m, t, s]) => (
+          {p && [[p.pay?.date ? `${+p.pay.date.slice(5, 7)}.${+p.pay.date.slice(8, 10)}` : "", "이용권 등록", PASS.name]].map(([m, t, s]) => (
             <div className="ti" key={t}><div className="m">{m}</div><div><b>{t}</b><span>{s}</span></div></div>
           ))}
         </div>
@@ -99,7 +99,11 @@ export function Alert({ nav, ui, params }) {
   if (!a || !p) return <div className="s"><Status /><Back onBack={nav.back} /></div>;
   const t = ALERT_TEXT[a.kind];
   const left = won(remain(p.daysLeft, p.pay?.amount));
-  const todos = a.kind === "signal" ? [
+  const es = p.pay?.method === "안심결제";
+  const todos = a.kind === "signal" ? es ? [
+    { t: "그대로 둬도 돼요", s: `닫혀도 남은 ${left} 전액 환불`, act: "이용권 보기", fn: () => nav.tab("pass") },
+    { t: `지금 해지하면 약 ${won(refundIfQuit(p.pay?.amount || PASS.price, PASS.days - p.daysLeft))}`, s: "위약금 10%를 빼요", act: "계산 보기", fn: () => ui.toast("쓴 기간 이용료와 위약금 10%를 뺀 금액이에요") },
+  ] : [
     { t: "남은 돈 확인", s: `약 ${left}`, act: "이용권 보기", fn: () => nav.tab("pass") },
     { t: `닫기 전에 해지하면 약 ${won(refundIfQuit(p.pay?.amount || PASS.price, PASS.days - p.daysLeft))}`, s: "위약금 10%를 뺀 금액", act: "계산 보기", fn: () => ui.toast("쓴 기간 이용료와 위약금 10%를 뺀 금액이에요") },
     { t: canObject(p.pay) ? "할부라 안심" : "영수증 챙기기", s: canObject(p.pay) ? "닫으면 할부 멈춤 가능" : "피해구제에 필요", act: "자세히", fn: () => ui.toast("20만 원 이상, 3개월 이상 할부면 남은 할부를 멈출 수 있어요") },
@@ -108,6 +112,7 @@ export function Alert({ nav, ui, params }) {
     p.shop.protect === "insurance" && { t: p.shop.protect === "insurance" ? "보증보험 환급 청구" : "보증보험 없음", s: p.shop.protect === "insurance" ? `약 ${left}` : "3번으로", act: p.shop.protect === "insurance" ? "청구 안내" : "다음", fn: () => ui.toast(p.shop.protect === "insurance" ? "OO보증보험 청구 화면으로 이어져요 (시연)" : "소비자원 피해구제로 넘어가요") },
     { t: "소비자원 피해구제 신청", s: "1372 · 영수증 준비", act: "안내 보기", fn: () => ui.toast("1372 소비자상담센터로 연결돼요 (시연)") },
   ].filter(Boolean);
+  const half = Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) / 2;
   return (
     <div className="s">
       <div className="scroll">
@@ -115,18 +120,17 @@ export function Alert({ nav, ui, params }) {
         <div className="pad">
           <span className={`tagc ${a.kind}`}>{t.tag}</span>
           <div className="t26" style={{ marginTop: 12 }}>{p.shop.name}<br />{t.title}</div>
-          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && p.pay?.method === "안심결제" ? "남은 이용료 전액이 자동으로 돌아와요." : t.body}</div>
+          <div className="t15 sub" style={{ marginTop: 10, lineHeight: 1.55 }}>{a.kind === "closed" && es ? "따로 신청하지 않아도 돼요." : t.body}</div>
         </div>
         {a.kind === "closed" && p.pay?.method === "안심결제" ? (
           <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-            <span>자동으로 돌려받는 돈</span>
+            <span>돌려받는 돈</span>
             <b>{won(remain(p.daysLeft, p.pay?.amount))}</b>
             <div className="rbar full"><i /><i /></div>
             <div className="rsplit">
-              <div className="h"><i /><span>결제대행사 보관금 {won(held(p.daysLeft, p.pay?.amount))}</span></div>
-              <div className="h2"><i /><span>살핌 보장(보험) {Math.round(remain(p.daysLeft, p.pay?.amount) / 1e4) - Math.round(held(p.daysLeft, p.pay?.amount) / 1e4)}만 원</span></div>
+              <div className="h"><i /><span>보관금 {half}만 원</span></div>
+              <div className="h2"><i /><span>보험금 {half}만 원</span></div>
             </div>
-            <div className="t13 sub">남은 이용료 {won(remain(p.daysLeft, p.pay?.amount))} 전액</div>
             <div className="rsteps">{["폐업 확인", "보관금 환불", "보험금 지급"].map((x, i) => <div key={x} className={i < 2 ? "done" : "now"}><i>{i < 2 ? "✓" : ""}</i>{x}</div>)}</div>
           </motion.div>
         ) : (<>
@@ -150,7 +154,7 @@ export function Alert({ nav, ui, params }) {
           ))}
         </div>
         </>)}
-        {a.kind === "signal" && <div className="pad"><button className="rowlink" onClick={() => nav.go("record")}><span>왜 이런 알림이 왔나요?</span><span className="ter">업장 기록 보기 ›</span></button></div>}
+        {a.kind === "signal" && <div className="pad"><button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록</span><Icon d={I.arrow} size={18} color="#B0B8C1" /></button></div>}
       </div>
     </div>
   );

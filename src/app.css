@@ -321,3 +321,27 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .quick button.on { background: var(--acc-soft); color: var(--acc); }
 .permonth { margin-top: 10px; font-size: 14px; color: var(--sub); text-align: right; } .permonth b { color: var(--ink); }
 .amt { align-items: center; }
+
+/* 11/13 다듬기: 글 줄이고 한눈에 */
+.sheet { bottom: 0; padding-bottom: 102px; }
+.sheetbtns { display: flex; gap: 8px; margin-top: 16px; }
+.sheetbtns .btn { height: 52px; font-size: 16px; }
+.sheetbtns .ghost { flex: none; padding: 0 16px; gap: 6px; font-weight: 600; }
+.sheetbtns .acc-b { flex: 1; }
+.metaline { display: flex; align-items: center; gap: 4px; }
+.safe { display: inline-flex; align-items: center; gap: 3px; margin-left: 6px; color: var(--acc); font-weight: 700; }
+.lrow .chipg { flex: none; }
+.facts3 { display: flex; margin: 20px 20px 0; padding: 16px 0; border-radius: 18px; background: var(--card); }
+.facts3 > div { flex: 1; text-align: center; }
+.facts3 > div + div { border-left: 1px solid var(--line); }
+.facts3 span { display: block; font-size: 13px; color: var(--ter); }
+.facts3 b { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 17px; }
+.live { width: 8px; height: 8px; border-radius: 4px; background: #12B886; box-shadow: 0 0 0 3px rgba(18, 184, 134, .16); }
+.tier { font-size: 14px; margin-top: 12px; }
+.tier .bar { height: 10px; }
+.tier b { width: 56px; font-size: 13px; }
+.guard b { font-size: 17px; }
+.acard { padding: 16px 18px; }
+.acard .row > div { flex: 1; }
+.rowlink { color: var(--ink); }
+@media (max-width: 520px) { .sheet { padding-bottom: calc(71px + max(10px, env(safe-area-inset-bottom))); } }
