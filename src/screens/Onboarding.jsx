@@ -28,7 +28,7 @@ export function Onboarding({ nav }) {
     <div className="s">
       <Status />
       <div className="intro fadein">
-        <Mark size={56} />
+        <div className="intro-brand"><Mark size={84} /><div className="splash-word">살핌<span /></div></div>
         <div className="intro-t">선결제 전에,<br />업장부터 살펴보세요</div>
         <div className="intro-list">
           {POINTS.map(([d, k, t]) => (

@@ -418,3 +418,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .me-card { display: flex; align-items: center; gap: 14px; width: calc(100% - 40px); margin: 20px 20px 0; text-align: left; }
 .me-card > div { flex: 1; } .me-card b { display: block; font-size: 18px; } .me-card div span { display: block; font-size: 13px; color: var(--ter); margin-top: 2px; }
 .avatar { width: 52px; height: 52px; border-radius: 26px; background: #D1D6DB; display: flex; align-items: center; justify-content: center; flex: none; }
+
+/* 소개: 이름·로고 크게, 세 줄은 아래로 */
+.intro { position: absolute; left: 0; right: 0; top: 54px; bottom: 112px; padding: 56px 28px 8px; display: flex; flex-direction: column; }
+.intro-brand { display: flex; align-items: center; gap: 14px; }
+.intro-brand .splash-word { font-size: 44px; animation: none; }
+.intro-brand .splash-word span { width: 11px; height: 11px; }
+.intro-t { margin-top: 26px; font-size: 26px; font-weight: 700; color: var(--sub); letter-spacing: -.5px; }
+.intro-list { margin-top: auto; }
+.intro { padding-top: 110px; }
+.intro-brand { gap: 6px; }
