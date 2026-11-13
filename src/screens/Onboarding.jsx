@@ -1,78 +1,42 @@
-import { useEffect, useRef, useState } from "react";
-import { TIERS, ALERT_TEXT } from "../data.js";
+import { useEffect, useState } from "react";
 import { Mark, Icon, I, Status } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
-// 처음 설치했을 때만: 스플래시 → 소개 카드 3장 → 권한 요청. 다음부터는 Splash만 잠깐.
-const SLIDES = [
-  { k: "결제 전", t: "작은 업장은\n약 2배 더 닫았어요", s: "" },
-  { k: "결제할 때", t: "안심결제면\n닫혀도 전액 돌려받아요", s: "" },
-  { k: "결제 후", t: "닫히면\n바로 알려 드려요", s: "" },
+// 처음 설치했을 때: 로고 → 소개 한 장 → 알림 허용 → 지도. 다음부터는 Splash만 잠깐.
+const POINTS = [
+  [I.search, "결제 전", "업장 크기부터 확인"],
+  [I.shield, "결제할 때", "닫혀도 전액 환불"],
+  [I.bell, "결제 후", "닫히면 바로 알림"],
 ];
 
-function Art({ i }) {
-  if (i === 0) return (
-    <div className="art-card">
-      <div className="row"><b style={{ fontSize: 16 }}>○○피트니스 F점</b><span className="chipg">작은 편 · 약 28평</span></div>
-      {Object.entries(TIERS).map(([k, v]) => (
-        <div key={k} className={`tier ${k === "small" ? "mine" : ""}`}><span>{v.label}</span><div className="bar"><i className="grow" style={{ width: `${v.bar}%`, background: k === "small" ? "#C2571A" : "#B0B8C1" }} /></div><b>{v.tag}</b></div>
-      ))}
-    </div>
-  );
-  if (i === 1) return (
-    <div className="art-card" style={{ padding: 16 }}>
-      <div className="opt on" style={{ margin: 0 }}><span className="radio" /><div style={{ flex: 1 }}><b>안심결제<em>추천</em></b><span>닫히면 전액 환불</span></div></div>
-      <div className="verdict good" style={{ marginTop: 12 }}><Icon d={I.check} size={16} color="#C2571A" w={2.6} />닫히면 남은 이용료 전액 환불</div>
-    </div>
-  );
-  return (
-    <div style={{ width: 300 }}>
-      <div className="art-push">
-        <div className="appic"><Mark size={30} /></div>
-        <div style={{ flex: 1 }}>
-          <div className="row" style={{ fontSize: 12 }}><b>살핌</b><span className="ter">지금</span></div>
-          <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>○○피트니스 F점 폐업이 등록됐어요</div>
-          <div style={{ fontSize: 12, color: "#C2571A", marginTop: 1, fontWeight: 600 }}>남은 45만 원 전액 환불</div>
-        </div>
-      </div>
-      <div className="art-card" style={{ marginTop: 12, background: "#191F28", color: "#fff" }}>
-        <div className="row" style={{ fontSize: 13, opacity: 0.7 }}><span>내 이용권</span><span>환불 진행 중</span></div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}><span style={{ width: 10, height: 10, borderRadius: 5, background: "#FF8A65" }} /><b style={{ fontSize: 22 }}>폐업 등록됨</b></div>
-      </div>
-    </div>
-  );
-}
+const Logo = () => <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살핌<span /></div></div>;
 
 export function Splash({ nav }) {
   useEffect(() => { const t = setTimeout(() => nav.tab("map"), 700); return () => clearTimeout(t); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살핌<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
+  return <Logo />;
 }
 
 export function Onboarding({ nav }) {
   const { dispatch } = useStore();
   const [step, setStep] = useState("splash");
-  const [i, setI] = useState(0);
   const [ask, setAsk] = useState(false);
-  const [dx, setDx] = useState(0);
-  const x0 = useRef(null);
-  useEffect(() => { const t = setTimeout(() => setStep("slides"), 1100); return () => clearTimeout(t); }, []);
-
+  useEffect(() => { const t = setTimeout(() => setStep("intro"), 1100); return () => clearTimeout(t); }, []);
   const start = () => { dispatch({ type: "onboarded" }); nav.tab("map"); };
-  const next = () => (i < SLIDES.length - 1 ? setI(i + 1) : setStep("perm"));
-  const up = () => { if (dx < -50) next(); else if (dx > 50 && i > 0) setI(i - 1); x0.current = null; setDx(0); };
 
-  if (step === "splash") return <div className="s splash"><div className="splash-mark"><Mark size={96} /></div><div className="splash-word">살핌<span /></div><div className="t15 ter">선결제 전에, 업장부터 살펴보세요</div></div>;
-
-  if (step === "perm") return (
+  if (step === "splash") return <Logo />;
+  return (
     <div className="s">
       <Status />
-      <div style={{ padding: "48px 24px 0" }}>
-        <div className="t26">살핌을 쓰려면<br />두 가지만 허용해 주세요</div>
-        {[["위치", "내 주변 업장을 지도에 보여 줘요", I.pin], ["알림", "업장이 닫으면 바로 알려 줘요", I.bell]].map(([b, s, d]) => (
-          <div className="ob" key={b} style={{ marginTop: 22 }}><div className="obi"><Icon d={d} color="#C2571A" w={2.2} /></div><div><b>{b}</b><span>{s}</span></div></div>
-        ))}
-              </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={() => setAsk(true)}>허용하고 시작하기</button></div>
+      <div className="intro fadein">
+        <Mark size={56} />
+        <div className="intro-t">선결제 전에,<br />업장부터 살펴보세요</div>
+        <div className="intro-list">
+          {POINTS.map(([d, k, t]) => (
+            <div key={k}><span><Icon d={d} size={22} color="#C2571A" w={2.1} /></span><em>{k}</em><b>{t}</b></div>
+          ))}
+        </div>
+      </div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} onClick={() => setAsk(true)}>시작하기</button></div>
       {ask && (
         <div className="sys-dim">
           <div className="sys">
@@ -82,30 +46,6 @@ export function Onboarding({ nav }) {
           </div>
         </div>
       )}
-    </div>
-  );
-
-  return (
-    <div className="s">
-      <Status />
-      <button className="skip" onClick={() => setStep("perm")}>건너뛰기</button>
-      <div className="ob-view" onPointerDown={(e) => { x0.current = e.clientX; }} onPointerMove={(e) => x0.current != null && setDx(e.clientX - x0.current)} onPointerUp={up} onPointerLeave={() => x0.current != null && up()}>
-        <div className="ob-track" style={{ transform: `translateX(calc(${-i * 100}% + ${dx}px))`, transition: dx ? "none" : undefined }}>
-          {SLIDES.map((sl, j) => (
-            <div className="ob-slide" key={sl.k}>
-              <div className="ob-art">{j === i && <Art i={j} />}</div>
-              <div style={{ padding: "0 28px" }}>
-                <div className="t14 acc b7">{sl.k}</div>
-                <div className="t26" style={{ marginTop: 8, whiteSpace: "pre-line" }}>{sl.t}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="bottom" style={{ flexDirection: "column", gap: 18, alignItems: "center" }}>
-        <div className="dots">{SLIDES.map((_, j) => <i key={j} className={j === i ? "on" : ""} />)}</div>
-        <button className="btn acc-b" style={{ alignSelf: "stretch" }} onClick={next}>{i < SLIDES.length - 1 ? "다음" : "시작하기"}</button>
-      </div>
     </div>
   );
 }

@@ -18,7 +18,7 @@ export function Detail({ nav }) {
         <Status /><Back onBack={nav.back} />
         <div className="pad">
           <div className="t26">{shop.name}</div>
-          <div className="t14 ter" style={{ marginTop: 6 }}>{shop.dist}m · {shop.years}년째 영업</div>
+          <div className="t14 ter" style={{ marginTop: 6 }}>{shop.cat === "pilates" ? "필라테스" : "헬스"} · {shop.dist}m</div>
         </div>
 
         {!d ? (
@@ -68,7 +68,7 @@ export function Detail({ nav }) {
           </div>
         )}
       </div>
-      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay")}>결제 방법 고르기</button></div>
+      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay")}>결제하기</button></div>
     </div>
   );
 }

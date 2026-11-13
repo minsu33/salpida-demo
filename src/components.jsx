@@ -73,8 +73,6 @@ export const Back = ({ onBack, right }) => (
 const TABS = [
   { id: "map", label: "지도", d: I.pin },
   { id: "pass", label: "내 이용권", d: I.card },
-  { id: "alerts", label: "알림", d: I.bell },
-  { id: "my", label: "내 정보", d: I.user },
 ];
 export const Tab = ({ active, go, unread }) => (
   <div className="tab">
@@ -82,7 +80,7 @@ export const Tab = ({ active, go, unread }) => (
       <button key={t.id} className={active === t.id ? "on" : ""} onClick={() => go(t.id)}>
         <Icon d={t.d} size={24} color={active === t.id ? "#C2571A" : "#8B95A1"} />
         {t.label}
-        {t.id === "alerts" && unread > 0 && <span className="badge">{unread}</span>}
+        {t.id === "pass" && unread > 0 && <span className="badge">{unread}</span>}
       </button>
     ))}
   </div>
