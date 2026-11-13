@@ -381,3 +381,14 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .feed div span { display: block; margin-top: 3px; font-size: 14px; font-weight: 600; color: var(--acc); }
 .fdot { width: 8px; height: 8px; border-radius: 4px; flex: none; background: #D1D6DB; }
 .fdot.new { background: var(--acc); } .fdot.new.closed { background: #F04452; }
+
+/* 누름 반응: 누른 것이 살짝 들어간다 (토스·당근처럼) */
+.paykind button, .pills button, .quick button, .chip, .feed, .rowlink, .actbtn, .sheetgo, .lrow { transition: transform .12s ease, background .15s; }
+.paykind button:active, .pills button:active, .quick button:active, .chip:active { transform: scale(.96); }
+.feed:active, .rowlink:active { background: #F7F8FA; }
+.mk:active .mk-dot { transform: scale(.9); }
+.mk-dot { transition: transform .12s ease; }
+/* 결제 완료 */
+.paydone { position: absolute; inset: 0; z-index: 70; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+.paydone b { margin-top: 10px; font-size: 26px; font-weight: 800; letter-spacing: -.5px; }
+.paydone span { font-size: 15px; color: var(--sub); }

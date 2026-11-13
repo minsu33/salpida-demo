@@ -37,6 +37,7 @@ function Shell() {
   const nav = useStackNav(state.onboarded ? "splash" : "onboarding");
   const [push, setPush] = useState(null);
   const [toast, setToast] = useState(null);
+  const [done, setDone] = useState(null);
   const [skip, setSkip] = useState(false);
   const [panel, setPanel] = useState(false);
   const device = useRef(null);
@@ -67,7 +68,8 @@ function Shell() {
   const ui = {
     toast: say,
     copy: (text) => { navigator.clipboard?.writeText(text).catch(() => {}); say("문구를 복사했어요"); },
-    registered: () => { clear(); nav.tab("pass"); say("결제했어요"); later(timeSkip, 2600); },
+    // 토스처럼: 결제 직후 완료 화면을 잠깐 보여 주고 이용권으로
+    registered: (pay) => { clear(); setDone({ amount: pay?.amount, shop: state.shop?.name }); later(() => { setDone(null); nav.tab("pass"); }, 1600); later(timeSkip, 1600 + 2600); },
     // 상태바를 빠르게 세 번 누르면 시연 메뉴가 열린다 (홈 화면 앱에서도 동작)
     secret: () => { const t = Date.now(); taps.current = [...taps.current.filter((x) => t - x < 700), t]; if (taps.current.length >= 3) { taps.current = []; setPanel(true); } },
   };
@@ -136,6 +138,19 @@ function Shell() {
               {skip && (
                 <motion.div className="skipper" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                   <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { delay: 0.15 } }}>{skip}</motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {done && (
+                <motion.div className="paydone" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: 0.2 } }}>
+                  <svg width="88" height="88" viewBox="0 0 88 88" aria-hidden>
+                    <motion.circle cx="44" cy="44" r="40" fill="#C2571A" initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 300, damping: 18 }} style={{ transformOrigin: "44px 44px" }} />
+                    <motion.path d="M27 45 L39 57 L62 33" fill="none" stroke="#fff" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.25, duration: 0.35 }} />
+                  </svg>
+                  <motion.b initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }}>결제했어요</motion.b>
+                  <motion.span initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }}>{done.shop} · {won(done.amount || 0)}</motion.span>
                 </motion.div>
               )}
             </AnimatePresence>

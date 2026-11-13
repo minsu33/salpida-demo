@@ -20,7 +20,7 @@ export function Pay({ nav, ui }) {
   const method = es ? "안심결제" : months ? "할부" : "일시불";
   const pay = { method, months, amount, date: new Date().toISOString().slice(0, 10) };
   const safe = es ? "남은 이용료 전액 환불" : shop.protect === "insurance" ? "보증보험으로 환급" : canObject(pay) ? "남은 할부를 멈출 수 있어요" : null;
-  const submit = () => { dispatch({ type: "register", pay }); ui.registered(); };
+  const submit = () => { dispatch({ type: "register", pay }); ui.registered(pay); };
 
   if (step === "scan") return (
     <div className="s scanner" onClick={() => setStep("form")}>

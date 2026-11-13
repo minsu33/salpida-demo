@@ -1,7 +1,19 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PASS, ALERT_TEXT, RECORD, won, remain, canObject, refundIfQuit } from "../data.js";
 import { Icon, I, Status, Back, Tab, Mark, md } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
+
+// 토스처럼: 돌려받는 돈이 0에서 올라가며 보인다
+function CountUp({ to }) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    let raf; const t0 = performance.now();
+    const step = (t) => { const k = Math.min(1, (t - t0) / 700); setV(to * (1 - Math.pow(1 - k, 3))); if (k < 1) raf = requestAnimationFrame(step); };
+    raf = requestAnimationFrame(step); return () => cancelAnimationFrame(raf);
+  }, [to]);
+  return <>{Math.round(v / 1e4)}만 원</>;
+}
 
 const unreadOf = (s) => s.alerts.filter((a) => !a.read).length;
 
@@ -93,7 +105,7 @@ export function Alert({ nav, ui, params }) {
         {a.kind === "closed" && p.pay?.method === "안심결제" ? (
           <motion.div className="refund" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
             <span>돌려받는 돈</span>
-            <b>{won(remain(p.daysLeft, p.pay?.amount))}</b>
+            <b><CountUp to={remain(p.daysLeft, p.pay?.amount)} /></b>
             <div className="rbar full"><i /><i /></div>
             <div className="rsplit">
               <div className="h"><i /><span>보관금 {half}만 원</span></div>
