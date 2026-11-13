@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ALERT_TEXT, won, held, remain, canObject } from "./data.js";
+import { ALERT_TEXT, won, remain, canObject } from "./data.js";
 import { Mark } from "./components.jsx";
 import { StoreProvider, useStore } from "./lib/store.jsx";
 import { useStackNav } from "./lib/nav.js";
