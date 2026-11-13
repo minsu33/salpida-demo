@@ -17,13 +17,12 @@ function CountUp({ to }) {
 
 const unreadOf = (s) => s.alerts.filter((a) => !a.read).length;
 
-// 내 이용권: 이용권 카드 + 소식(참고 신호·폐업 등록). 알림 탭을 따로 두지 않는다
+// 내 이용권: 이용권 카드 + 결제 기록 + 업장 기록
 export function Pass({ nav, ui }) {
-  const { state, dispatch } = useStore();
+  const { state } = useStore();
   const p = state.pass;
   const closed = state.alerts.some((a) => a.kind === "closed");
   const es = p?.pay?.method === "안심결제";
-  const open = (a) => { dispatch({ type: "read", id: a.id }); nav.go("alert", { id: a.id }); };
   const left = p ? won(remain(p.daysLeft, p.pay?.amount)) : "";
   return (
     <div className="s">
@@ -35,7 +34,7 @@ export function Pass({ nav, ui }) {
         ) : (
           <>
             <div className="pass">
-              <div className="row"><div className="t18 b7">{p.shop.name}</div><span className="t13" style={{ opacity: 0.6 }}>{PASS.name}</span></div>
+              <div className="row"><div className="t18 b7">{p.shop.name}</div><span className="t13" style={{ opacity: 0.6 }}>{p.pay?.plan || 12}개월권</span></div>
               <div className="pstate"><i style={{ background: closed ? "#FF8A65" : "#3DD68C" }} />{closed ? "폐업 등록됨" : "영업 중"}</div>
               <div className="p"><i style={{ width: `${(100 * p.daysLeft) / PASS.days}%`, background: closed ? "#5B616B" : undefined }} /></div>
               <div className="row t14" style={{ opacity: 0.8 }}>{closed ? <><span>이용 중단</span><span>{es ? `환불 ${left}` : `남은 이용료 ${left}`}</span></> : <><span>{p.daysLeft}일 남음</span><span>남은 이용료 {left}</span></>}</div>
@@ -48,26 +47,54 @@ export function Pass({ nav, ui }) {
               <span>{won(p.pay?.amount || PASS.price)} · {es ? "안심결제" : "일반 결제"} · {p.pay?.months ? `${p.pay.months}개월 할부` : "일시불"}</span>
               <span>{p.pay?.date ? md(p.pay.date) : ""}</span>
             </div>
+            <div className="passact">
+              {[[I.receipt, "영수증", "영수증을 저장했어요"], [I.doc, "환불 규정", "소비자분쟁해결기준을 따라요"], [I.chat, "업장 문의", "업장 채팅은 준비 중이에요"]].map(([d, t, msg]) => (
+                <button key={t} onClick={() => ui.toast(msg)}><Icon d={d} size={22} color="#4E5968" />{t}</button>
+              ))}
+            </div>
             <div className="pad" style={{ marginTop: 10 }}><button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록</span><Icon d={I.arrow} size={18} color="#B0B8C1" /></button></div>
-            {state.alerts.length > 0 && (
-              <div className="pad" style={{ marginTop: 28 }}>
-                <div className="t18 b7">소식</div>
-                {state.alerts.map((a) => {
-                  const t = ALERT_TEXT[a.kind];
-                  return (
-                    <motion.button key={a.id} className="feed" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} onClick={() => open(a)}>
-                      <span className={`fdot ${a.kind} ${a.read ? "" : "new"}`} />
-                      <div><em className={a.kind}>{t.tag}</em><b>{t.title}</b>{a.kind === "closed" && es && <span>남은 {left} 전액 환불</span>}</div>
-                      <Icon d={I.arrow} size={20} color="#B0B8C1" />
-                    </motion.button>
-                  );
-                })}
-              </div>
-            )}
           </>
         )}
       </div>
       <Tab active="pass" go={nav.tab} unread={unreadOf(state)} />
+    </div>
+  );
+}
+
+// 알림 목록
+export function Alerts({ nav, ui }) {
+  const { state, dispatch } = useStore();
+  const p = state.pass;
+  const open = (a) => { dispatch({ type: "read", id: a.id }); nav.go("alert", { id: a.id }); };
+  return (
+    <div className="s">
+      <div className="scroll">
+        <Status onSecret={ui.secret} />
+        <div className="pad row" style={{ paddingTop: 14 }}><span className="t26">알림</span>{state.alerts.some((a) => !a.read) && <button className="t14 ter b6" onClick={() => dispatch({ type: "read", id: "all" })}>모두 읽음</button>}</div>
+        {state.alerts.length === 0 && (
+          <div className="empty"><Mark size={56} /><b>알림 없음</b><span>{p ? "폐업이 등록되면 바로 알려요" : "이용권을 등록하면 알림이 와요"}</span></div>
+        )}
+        <div className="pad">
+          {state.alerts.map((a) => {
+            const t = ALERT_TEXT[a.kind];
+            return (
+              <motion.div key={a.id} className={`acard ${a.kind}`} initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} onClick={() => open(a)}>
+                <div className="row"><span className={`tagc ${a.kind}`}>{t.tag}</span>{!a.read && <i className="dot-new" />}</div>
+                <div className="row" style={{ marginTop: 10, gap: 10 }}>
+                  <div className="t16 b7" style={{ lineHeight: 1.45 }}>{p?.shop.name}<br />{t.title}</div>
+                  <Icon d={I.arrow} size={20} color={a.kind === "closed" ? "#F04452" : "#C2571A"} />
+                </div>
+                {a.kind === "closed" && p?.pay?.method === "안심결제" && <div className="t14 b7 acc" style={{ marginTop: 8 }}>남은 {won(remain(p.daysLeft, p.pay?.amount))} 전액 환불</div>}
+              </motion.div>
+            );
+          })}
+          {p && <div className="t14 ter b7" style={{ marginTop: 22 }}>지난 기록</div>}
+          {p && [[p.pay?.date ? `${+p.pay.date.slice(5, 7)}.${+p.pay.date.slice(8, 10)}` : "", "이용권 등록", `${p.pay?.plan || 12}개월권`]].map(([m, t, s]) => (
+            <div className="ti" key={t}><div className="m">{m}</div><div><b>{t}</b><span>{s}</span></div></div>
+          ))}
+        </div>
+      </div>
+      <Tab active="alerts" go={nav.tab} unread={unreadOf(state)} />
     </div>
   );
 }
@@ -160,7 +187,7 @@ export function Record({ nav }) {
           <div className="row t12 ter" style={{ marginTop: 6 }}><span>1년 전</span><span className="acc b7">최근 3개월 0건</span></div>
         </div>
         <div className="pad" style={{ marginTop: 14 }}>
-          {(closedRec ? [{ m: "2월", t: "인허가에 폐업 등록", s: "남은 이용료 전액 환불", hot: true }, ...RECORD.log] : RECORD.log).map((l) => <div className="ti" key={l.m + l.t}><div className="d" style={l.hot ? { background: "var(--acc)" } : undefined} /><div className="m">{l.m}</div><div><b>{l.t}</b><span>{l.s}</span></div></div>)}
+          {(closedRec ? [{ m: "2월", t: "인허가에 폐업 등록", s: "남은 이용료 전액 환불", hot: true }, ...RECORD.log] : RECORD.log).filter((l) => state.pass || l.m !== "11월").map((l) => <div className="ti" key={l.m + l.t}><div className="d" style={l.hot ? { background: "var(--acc)" } : undefined} /><div className="m">{l.m}</div><div><b>{l.t}</b><span>{l.s}</span></div></div>)}
         </div>
               </div>
     </div>

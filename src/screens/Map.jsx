@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { TIERS } from "../data.js";
-import { Icon, I, PIcon, CATS, Status, Tab, Sk } from "../components.jsx";
+import { Icon, I, PIcon, CATS, Status, Tab, Sk, Back } from "../components.jsx";
 import { getShops } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
 
@@ -70,7 +70,7 @@ export function MapScreen({ nav, ui }) {
       ) : (
       <div className="chips">
         <button className={`chip ${guardOnly ? "on guardf" : ""}`} onClick={() => setGuardOnly(!guardOnly)}><PIcon n="shield" size={15} color="#C2571A" />&nbsp;안심결제만</button>
-        {CATS.filter((c) => c.ready).map((c) => (
+        {CATS.map((c) => (
           <button key={c.id} className={`chip ${cat === c.id ? "on" : ""} ${c.ready ? "" : "soon"}`} onClick={() => setCat(cat === c.id ? null : c.id)}>
             {c.label}
           </button>
@@ -78,6 +78,7 @@ export function MapScreen({ nav, ui }) {
       </div>
       )}
 
+      <button className="fab locate" aria-label="내 위치" onClick={() => ui.toast("내 위치로 옮겼어요")}><Icon d={I.locate} size={22} color="#191F28" /></button>
       <motion.div className="sheet" animate={sheet} drag="y" dragConstraints={{ top: 0, bottom: 0 }} dragElastic={{ top: 0.4, bottom: 0.1 }}
         onDragEnd={(_, i) => { if (i.offset.y < -50) open(); }}>
         <div className="grab" />
@@ -99,11 +100,43 @@ export function MapScreen({ nav, ui }) {
               </div>
               <span className="chipg">{TIERS[sel.tier].label} · {sel.pyeong}평</span>
             </div>
-            <button className="btn acc-b sheetgo" onClick={open}>상세 보기</button>
+            <div className="sheetbtns">
+              <button className="btn ghost" onClick={() => nav.go("list")}><Icon d={I.list} size={18} />목록 {data.shops.length}</button>
+              <button className="btn acc-b" onClick={open}>상세 보기</button>
+            </div>
           </>
         )}
       </motion.div>
       <Tab active="map" go={nav.tab} unread={state.alerts.filter((a) => !a.read).length} />
+    </div>
+  );
+}
+
+// 주변 업장 목록: 가까운 순, 크기와 보장 여부를 한눈에
+export function List({ nav }) {
+  const { dispatch } = useStore();
+  const [data, setData] = useState(null);
+  useEffect(() => { getShops().then(setData); }, []);
+  const open = (s) => { dispatch({ type: "pick", shop: s }); nav.go("detail"); };
+  return (
+    <div className="s">
+      <div className="scroll">
+        <Status /><Back onBack={nav.back} />
+        <div className="pad"><div className="t26">주변 헬스장</div></div>
+        <div className="pad" style={{ marginTop: 10 }}>
+          {!data ? [0, 1, 2, 3, 4].map((k) => <div key={k} className="lrow"><div style={{ flex: 1 }}><Sk w="45%" h={18} /><Sk w="30%" h={13} style={{ marginTop: 8 }} /></div><Sk w={76} h={28} r={8} /></div>)
+            : data.shops.map((s) => (
+              <button key={s.id} className="lrow" onClick={() => open(s)}>
+                <div style={{ flex: 1, textAlign: "left" }}>
+                  <div className="t16 b7">{s.name}</div>
+                  <div className="t13 ter metaline" style={{ marginTop: 3 }}>{s.dist}m · {s.years}년째{s.protect === "escrow" && <span className="safe"><PIcon n="shield" size={13} color="#C2571A" />안심결제</span>}</div>
+                </div>
+                <span className="chipg">{TIERS[s.tier].label} · {s.pyeong}평</span>
+                <Icon d={I.arrow} size={18} color="#B0B8C1" />
+              </button>
+            ))}
+        </div>
+      </div>
     </div>
   );
 }

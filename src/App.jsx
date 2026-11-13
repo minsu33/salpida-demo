@@ -5,12 +5,13 @@ import { Mark } from "./components.jsx";
 import { StoreProvider, useStore } from "./lib/store.jsx";
 import { useStackNav } from "./lib/nav.js";
 import { Onboarding, Splash } from "./screens/Onboarding.jsx";
-import { MapScreen } from "./screens/Map.jsx";
+import { MapScreen, List } from "./screens/Map.jsx";
 import { Detail } from "./screens/Detail.jsx";
 import { Pay } from "./screens/Pay.jsx";
-import { Pass, Alert, Record } from "./screens/After.jsx";
+import { Pass, Alerts, Alert, Record } from "./screens/After.jsx";
+import { My } from "./screens/My.jsx";
 
-const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, detail: Detail, pay: Pay, pass: Pass, alert: Alert, record: Record };
+const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, list: List, detail: Detail, pay: Pay, pass: Pass, alerts: Alerts, alert: Alert, record: Record, my: My };
 
 // 들어갈 때는 오른쪽에서, 뒤로 갈 때는 반대로, 탭 이동은 페이드
 const slide = {
@@ -59,7 +60,7 @@ function Shell() {
   const timeSkip = () => {
     setSkip("결제 2개월 뒤");
     later(() => { dispatch({ type: "skip", days: 60 }); dispatch({ type: "alert", kind: "signal", id: Date.now() - 1 }); }, 700);
-    later(() => { setSkip(false); say("참고 신호가 생겼어요"); }, 1700);
+    later(() => { setSkip(false); say("참고 신호가 생겼어요 · 알림에서 볼 수 있어요"); }, 1700);
     later(() => setSkip("결제 3개월째"), 7700);
     later(() => dispatch({ type: "skip", days: 30 }), 8400);
     later(() => { setSkip(false); sendAlert("closed"); }, 9400);
@@ -81,7 +82,7 @@ function Shell() {
     closed: () => { if (!state.pass) return say("먼저 이용권을 등록하세요"); sendAlert("closed"); },
   };
 
-  const openPush = () => { const p = push; setPush(null); dispatch({ type: "read", id: "all" }); nav.tab("pass"); later(() => nav.go("alert", { id: p.id }), 60); };
+  const openPush = () => { const p = push; setPush(null); dispatch({ type: "read", id: "all" }); nav.tab("alerts"); later(() => nav.go("alert", { id: p.id }), 60); };
   const View = SCREENS[nav.page.name];
   // 화면 전환: 나가는 화면은 애니메이션 뒤 타이머로 확실히 지운다 (백그라운드 탭에서 애니메이션이 멈춰도 쌓이지 않게)
   const screenKey = nav.depth + nav.page.name;

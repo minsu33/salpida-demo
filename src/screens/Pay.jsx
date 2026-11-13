@@ -7,18 +7,18 @@ import { useStore } from "../lib/store.jsx";
 const QR = Array.from({ length: 441 }, (_, i) => { const x = i % 21, y = (i / 21) | 0; const f = (a, b) => x >= a && x < a + 7 && y >= b && y < b + 7; const fin = f(0, 0) || f(14, 0) || f(0, 14); if (fin) { const lx = x % 7 === 0 || x % 7 === 6 || x >= 14 && (x - 14) % 7 === 6, cx = x % 7, cy = y % 7; return cx === 0 || cx === 6 || cy === 0 || cy === 6 || (cx >= 2 && cx <= 4 && cy >= 2 && cy <= 4); } return ((x * 7 + y * 13 + x * y) % 5) < 2; });
 
 // 결제: 안심결제 업장은 카운터 QR을 먼저 찍고, 같은 화면에서 금액·할부를 고른 뒤 바로 낸다
-export function Pay({ nav, ui }) {
+export function Pay({ nav, ui, params }) {
   const { state, dispatch } = useStore();
   const shop = state.shop;
   const escrow = shop.protect === "escrow";
   const [step, setStep] = useState(escrow ? "scan" : "form");
   const [es, setEs] = useState(escrow);
   const [months, setMonths] = useState(6);
-  const [amount, setAmount] = useState(PASS.price);
+  const [amount, setAmount] = useState(params?.amount || PASS.price);
   useEffect(() => { if (step !== "scan") return; const t = setTimeout(() => setStep("form"), 1800); return () => clearTimeout(t); }, [step]);
   const setAmt = (v) => setAmount(Math.min(99999999, Number(v.replace(/\D/g, "")) || 0));
   const method = es ? "안심결제" : months ? "할부" : "일시불";
-  const pay = { method, months, amount, date: new Date().toISOString().slice(0, 10) };
+  const pay = { method, months, amount, plan: params?.plan || 12, date: new Date().toISOString().slice(0, 10) };
   const safe = es ? "남은 이용료 전액 환불" : shop.protect === "insurance" ? "보증보험으로 환급" : canObject(pay) ? "남은 할부를 멈출 수 있어요" : null;
   const submit = () => { dispatch({ type: "register", pay }); ui.registered(pay); };
 

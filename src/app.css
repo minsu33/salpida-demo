@@ -347,7 +347,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (max-width: 520px) { .sheet { padding-bottom: calc(71px + max(10px, env(safe-area-inset-bottom))); } }
 
 /* 11/13 재구성: 화면 6개, 탭 2개 */
-.tab { justify-content: center; gap: 96px; }
+.tab { justify-content: space-around; gap: 0; }
 .intro { padding: 96px 28px 0; }
 .intro-t { margin-top: 28px; font-size: 30px; font-weight: 800; line-height: 1.32; letter-spacing: -.8px; }
 .intro-list { margin-top: 44px; }
@@ -392,3 +392,29 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .paydone { position: absolute; inset: 0; z-index: 70; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
 .paydone b { margin-top: 10px; font-size: 26px; font-weight: 800; letter-spacing: -.5px; }
 .paydone span { font-size: 15px; color: var(--sub); }
+/* 고른 핀: 안심결제 업장만 주황, 나머지는 검정 */
+.mk.on:not(.g) .mk-dot { background: var(--ink); box-shadow: 0 4px 14px rgba(25, 31, 40, .35); }
+.mk.on:not(.g) .mk-name { color: var(--ink); }
+
+/* 완성도: 상세 이용권·정보, 내 위치, 이용권 바로가기, 내 정보 */
+.navr { display: flex; gap: 10px; }
+.plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+.plans button { padding: 14px 16px; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); text-align: left; transition: transform .12s; }
+.plans button:active { transform: scale(.97); }
+.plans button.on { box-shadow: inset 0 0 0 2px var(--acc); background: #FFFBF8; }
+.plans span { display: block; font-size: 14px; color: var(--sub); font-weight: 600; }
+.plans b { display: block; margin-top: 4px; font-size: 18px; }
+.plans em { display: block; margin-top: 2px; font-style: normal; font-size: 13px; color: var(--ter); }
+.plans button.on span, .plans button.on b { color: var(--acc); }
+.info2 { margin-top: 8px; }
+.info2 > div { display: flex; padding: 12px 0; font-size: 15px; }
+.info2 span { width: 64px; flex: none; color: var(--ter); }
+.info2 b { font-weight: 500; }
+.fab.locate { bottom: 290px; z-index: 4; }
+.passact { display: flex; margin: 18px 20px 0; padding: 14px 0; border-radius: 16px; background: var(--card); }
+.passact button { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--sub); }
+.passact button + button { border-left: 1px solid var(--line); }
+.passact button:active { opacity: .6; }
+.me-card { display: flex; align-items: center; gap: 14px; width: calc(100% - 40px); margin: 20px 20px 0; text-align: left; }
+.me-card > div { flex: 1; } .me-card b { display: block; font-size: 18px; } .me-card div span { display: block; font-size: 13px; color: var(--ter); margin-top: 2px; }
+.avatar { width: 52px; height: 52px; border-radius: 26px; background: #D1D6DB; display: flex; align-items: center; justify-content: center; flex: none; }

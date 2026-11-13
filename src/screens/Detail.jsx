@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import { TIERS, PROTECT } from "../data.js";
+import { TIERS, PROTECT, man } from "../data.js";
 import { Icon, I, Status, Back, Sk, md } from "../components.jsx";
 import { getShop } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
 
 // 업장 상세 (결제 전): 공공데이터 사실 → 크기 비교 → 업장이 가입한 보장(따로) → 할 일, 버튼은 하단 고정
-export function Detail({ nav }) {
+// 업장이 안내한 이용권 가격 (시연용 예시)
+const PLANS = [[1, 100000], [3, 250000], [6, 400000], [12, 600000]];
+
+export function Detail({ nav, ui }) {
   const { state } = useStore();
+  const [plan, setPlan] = useState(12);
+  const [liked, setLiked] = useState(false);
+  const amount = PLANS.find(([m]) => m === plan)[1];
   const [d, setD] = useState(null);
   useEffect(() => { getShop(state.shop.id).then(setD); }, [state.shop.id]);
   const shop = d?.shop || state.shop;
@@ -15,7 +21,11 @@ export function Detail({ nav }) {
   return (
     <div className="s">
       <div className="scroll">
-        <Status /><Back onBack={nav.back} />
+        <Status /><Back onBack={nav.back} right={
+          <div className="navr">
+            <button className="hit" aria-label="공유" onClick={() => ui.toast("링크를 복사했어요")}><Icon d={I.share} size={22} /></button>
+            <button className="hit" aria-label="찜" onClick={() => { setLiked(!liked); ui.toast(liked ? "찜을 풀었어요" : "찜했어요"); }}><Icon d={I.heart} size={22} color={liked ? "#C2571A" : "#191F28"} /></button>
+          </div>} />
         <div className="pad">
           <div className="t26">{shop.name}</div>
           <div className="t14 ter" style={{ marginTop: 6 }}>{shop.cat === "pilates" ? "필라테스" : "헬스"} · {shop.dist}m</div>
@@ -63,12 +73,34 @@ export function Detail({ nav }) {
                   <div style={{ flex: 1 }}><b>보장 없음</b><span>3개월 이상 할부로 지킬 수 있어요</span></div>
                 </div>
               )}
-                          </div>
+            </div>
 
+            <div className="pad" style={{ marginTop: 30 }}>
+              <div className="row"><div className="t18 b7">이용권</div><span className="t13 ter">업장 안내 가격</span></div>
+              <div className="plans">
+                {PLANS.map(([m, won]) => (
+                  <button key={m} className={plan === m ? "on" : ""} onClick={() => setPlan(m)}>
+                    <span>{m}개월</span><b>{man(won)} 원</b><em>월 {man(won / m)}</em>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pad" style={{ marginTop: 30 }}>
+              <div className="t18 b7">업장 정보</div>
+              <div className="info2">
+                <div><span>주소</span><b>서울 강남구 역삼동 ○○길</b></div>
+                <div><span>업종</span><b>{shop.cat === "pilates" ? "필라테스" : "체력단련장업"}</b></div>
+                <div><span>면적</span><b>{shop.areaM2}㎡ · 약 {shop.pyeong}평</b></div>
+                <div><span>개업</span><b>{2026 - shop.years}년</b></div>
+              </div>
+              <button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록</span><Icon d={I.arrow} size={18} color="#B0B8C1" /></button>
+              <button className="rowlink" onClick={() => ui.toast("정정 요청을 보냈어요")}><span>정보가 달라요</span><Icon d={I.arrow} size={18} color="#B0B8C1" /></button>
+            </div>
           </div>
         )}
       </div>
-      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay")}>결제하기</button></div>
+      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay", { amount, plan })}>{man(amount)} 원 결제하기</button></div>
     </div>
   );
 }
