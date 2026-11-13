@@ -43,7 +43,7 @@ export function MapScreen({ nav, ui }) {
             <motion.button key={s.id} className={`mk ${on ? "on" : ""} ${s.protect === "escrow" ? "g" : ""}`} style={{ left: `${s.x}%`, top: `${s.y}%`, zIndex: on ? 5 : 2 }}
               initial={false} animate={{ scale: on ? 1.12 : 1 }} transition={{ type: "spring", stiffness: 500, damping: 22 }}
               onClick={() => { setSelId(s.id); sheet.start({ y: [12, 0], transition: { duration: 0.25 } }); }}>
-              <span className="mk-dot"><PIcon n={catOf(s.cat).icon} size={on ? 20 : 17} color={on ? "#fff" : s.protect === "escrow" ? "#C2571A" : "#191F28"} /></span>
+              <span className="mk-dot"><Icon d={I.store} size={on ? 21 : 17} w={on ? 2 : 1.9} color={on ? "#fff" : s.protect === "escrow" ? "#C2571A" : "#4E5968"} /></span>
               {named.has(s.id) && <span className="mk-name">{s.name.replace("○○", "")}</span>}
             </motion.button>
           );
@@ -61,7 +61,7 @@ export function MapScreen({ nav, ui }) {
         <div className="sresult">
           {(data?.shops || []).filter((s) => s.name.replace("○○", "").includes(q.trim())).slice(0, 6).map((s) => (
             <button key={s.id} onClick={() => { setQ(""); setCat(null); setGuardOnly(false); setSelId(s.id); }}>
-              <PIcon n={catOf(s.cat).icon} size={16} color={s.protect === "escrow" ? "#C2571A" : "#4E5968"} />
+              <Icon d={I.store} size={18} color={s.protect === "escrow" ? "#C2571A" : "#8B95A1"} />
               <b>{s.name}</b><span>{s.dist}m</span>
             </button>
           ))}
@@ -72,7 +72,7 @@ export function MapScreen({ nav, ui }) {
         <button className={`chip ${guardOnly ? "on guardf" : ""}`} onClick={() => setGuardOnly(!guardOnly)}><PIcon n="shield" size={15} color="#C2571A" />&nbsp;안심결제만</button>
         {CATS.map((c) => (
           <button key={c.id} className={`chip ${cat === c.id ? "on" : ""} ${c.ready ? "" : "soon"}`} onClick={() => setCat(cat === c.id ? null : c.id)}>
-            <PIcon n={c.icon} size={15} color={cat === c.id ? "#fff" : "#4E5968"} />&nbsp;{c.label}
+            {c.label}
           </button>
         ))}
       </div>

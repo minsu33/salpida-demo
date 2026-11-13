@@ -12,6 +12,7 @@ export const Icon = ({ d, size = 22, color = "#191F28", w = 2 }) => (
 
 export const I = {
   list: <path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" />,
+  store: <><path d="M3.5 9.5L5 4.5h14l1.5 5" /><path d="M3.5 9.5a2.8 2.8 0 005.67 0 2.8 2.8 0 005.66 0 2.8 2.8 0 005.67 0" /><path d="M5 12.5V19.5h14v-7" /><path d="M10 19.5v-4h4v4" /></>,
   pen: <><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M13.5 6.5l4 4" /></>,
   shield: <><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z" /><path d="M8.5 12l2.5 2.5 4.5-5" /></>,
   doc: <><path d="M7 3h7l5 5v13H7z" /><path d="M14 3v5h5M10 13h6M10 17h4" /></>,
