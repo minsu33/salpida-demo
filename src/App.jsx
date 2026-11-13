@@ -8,9 +8,9 @@ import { Onboarding, Splash } from "./screens/Onboarding.jsx";
 import { MapScreen } from "./screens/Map.jsx";
 import { Detail } from "./screens/Detail.jsx";
 import { Pay } from "./screens/Pay.jsx";
-import { Pass, Alert } from "./screens/After.jsx";
+import { Pass, Alert, Record } from "./screens/After.jsx";
 
-const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, detail: Detail, pay: Pay, pass: Pass, alert: Alert };
+const SCREENS = { onboarding: Onboarding, splash: Splash, map: MapScreen, detail: Detail, pay: Pay, pass: Pass, alert: Alert, record: Record };
 
 // 들어갈 때는 오른쪽에서, 뒤로 갈 때는 반대로, 탭 이동은 페이드
 const slide = {

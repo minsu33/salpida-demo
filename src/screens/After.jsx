@@ -36,6 +36,7 @@ export function Pass({ nav, ui }) {
               <span>{won(p.pay?.amount || PASS.price)} · {es ? "안심결제" : "일반 결제"} · {p.pay?.months ? `${p.pay.months}개월 할부` : "일시불"}</span>
               <span>{p.pay?.date ? md(p.pay.date) : ""}</span>
             </div>
+            <div className="pad" style={{ marginTop: 10 }}><button className="rowlink" onClick={() => nav.go("record")}><span>업장 기록</span><Icon d={I.arrow} size={18} color="#B0B8C1" /></button></div>
             {state.alerts.length > 0 && (
               <div className="pad" style={{ marginTop: 28 }}>
                 <div className="t18 b7">소식</div>
@@ -102,7 +103,7 @@ export function Alert({ nav, ui, params }) {
           </motion.div>
         ) : (<>
         {a.kind === "signal" && (
-          <div className="key sig" style={{ marginTop: 20 }}>
+          <div className="key sig" style={{ marginTop: 20, cursor: "pointer" }} onClick={() => nav.go("record")}>
             <div className="row"><b className="t15">사장님 글</b><span className="t13 acc b7">최근 3개월 0건</span></div>
             <div className="bars">
               {RECORD.posts.map((v, i) => <motion.i key={i} className={v ? "" : "zero"} initial={{ height: 0 }} animate={{ height: v ? `${v}%` : 10 }} transition={{ delay: 0.03 * i, duration: 0.4 }} />)}
@@ -122,6 +123,34 @@ export function Alert({ nav, ui, params }) {
         </div>
         </>)}
       </div>
+    </div>
+  );
+}
+
+// 업장 기록: 쓸수록 쌓이는 데이터
+export function Record({ nav }) {
+  const { state } = useStore();
+  const s = state.pass?.shop || state.shop;
+  const closedRec = state.alerts?.some((x) => x.kind === "closed");
+  return (
+    <div className="s">
+      <div className="scroll">
+        <Status /><Back onBack={nav.back} />
+        <div className="pad">
+          <div className="t26">{s?.name} 기록</div>
+          <div style={{ display: "flex", gap: 6, marginTop: 10 }}><span className="chipg" style={closedRec ? { background: "#FFF1EF", color: "#F04452" } : undefined}>{closedRec ? "폐업 등록됨" : "영업 중"}</span><span className="chipg">기록 14개월째</span></div>
+        </div>
+        <div className="key" style={{ marginTop: 18 }}>
+          <div className="row"><b className="t15">사장님 글</b><span className="t13 ter">월별</span></div>
+          <div className="bars">
+            {RECORD.posts.map((v, i) => <motion.i key={i} className={v ? "" : "zero"} initial={{ height: 0 }} animate={{ height: v ? `${v}%` : 10 }} transition={{ delay: 0.03 * i, duration: 0.4 }} />)}
+          </div>
+          <div className="row t12 ter" style={{ marginTop: 6 }}><span>1년 전</span><span className="acc b7">최근 3개월 0건</span></div>
+        </div>
+        <div className="pad" style={{ marginTop: 14 }}>
+          {(closedRec ? [{ m: "2월", t: "인허가에 폐업 등록", s: "남은 이용료 전액 환불", hot: true }, ...RECORD.log] : RECORD.log).map((l) => <div className="ti" key={l.m + l.t}><div className="d" style={l.hot ? { background: "var(--acc)" } : undefined} /><div className="m">{l.m}</div><div><b>{l.t}</b><span>{l.s}</span></div></div>)}
+        </div>
+              </div>
     </div>
   );
 }
