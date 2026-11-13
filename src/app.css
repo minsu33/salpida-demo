@@ -428,3 +428,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .intro-list { margin-top: auto; }
 .intro { padding-top: 110px; }
 .intro-brand { gap: 6px; }
+
+/* 소개: 당근처럼 로고와 이름만 */
+.intro2 { position: absolute; left: 0; right: 0; top: 0; bottom: 112px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+.intro2 .splash-word { font-size: 56px; letter-spacing: -2px; animation: none; }
+.intro2 .splash-word span { width: 14px; height: 14px; }
