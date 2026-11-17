@@ -433,3 +433,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .intro2 { position: absolute; left: 0; right: 0; top: 0; bottom: 112px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
 .intro2 .splash-word { font-size: 56px; letter-spacing: -2px; animation: none; }
 .intro2 .splash-word span { width: 14px; height: 14px; }
+
+/* 내 이용권: 내 돈이 지금 어디 있나 */
+.money { margin-top: 22px; }
+.mbar { display: flex; gap: 2px; height: 12px; margin: 12px 0 8px; border-radius: 6px; overflow: hidden; }
+.mbar i { background: #C9CED4; transition: flex .7s ease; min-width: 0; } .mbar i:last-child { background: var(--acc); }
+.money b { font-weight: 700; }

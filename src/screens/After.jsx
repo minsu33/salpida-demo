@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { PASS, ALERT_TEXT, RECORD, won, remain, canObject, refundIfQuit } from "../data.js";
+import { PASS, ALERT_TEXT, RECORD, won, man, remain, canObject, refundIfQuit } from "../data.js";
 import { Icon, I, Status, Back, Tab, Mark, md } from "../components.jsx";
 import { useStore } from "../lib/store.jsx";
 
@@ -25,6 +25,10 @@ export function Pass({ nav, ui }) {
   const es = p?.pay?.method === "안심결제";
   const store = p?.pay?.method === "매장 결제"; // 금액·기간을 모름
   const left = p ? won(remain(p.daysLeft, p.pay?.amount)) : "";
+  // 안심결제: 절반은 업장에 바로, 나머지 절반은 보관했다가 매달 나눠 보낸다
+  const amt = p?.pay?.amount || PASS.price;
+  const mon = Math.round((PASS.days - (p?.daysLeft ?? PASS.days)) / 30);
+  const held = (amt / 2) * (1 - Math.min(1, mon / (p?.pay?.plan || 12)));
   return (
     <div className="s">
       <div className="scroll">
@@ -48,6 +52,13 @@ export function Pass({ nav, ui }) {
               <span>{store ? "매장에서 결제 · 지켜보는 중" : `${won(p.pay?.amount || PASS.price)} · ${es ? "안심결제" : "카운터 결제"} · ${p.pay?.months ? `${p.pay.months}개월 할부` : "일시불"}`}</span>
               <span>{p.pay?.date ? md(p.pay.date) : ""}</span>
             </div>
+            {es && (
+              <div className="pad money">
+                <div className="row"><div className="t16 b7">내 돈은 지금</div><span className="t13 ter">{closed ? "돌려받는 중" : `매달 ${man(amt / 2 / (p.pay?.plan || 12))}씩 업장으로`}</span></div>
+                <div className="mbar"><i style={{ flex: amt - held }} /><i style={{ flex: held }} /></div>
+                <div className="row t14"><span className="sub">업장에 간 돈 <b>{man(amt - held)} 원</b></span><span className="acc">보관 중 <b>{man(held)} 원</b></span></div>
+              </div>
+            )}
             <div className="passact">
               {[store ? [I.receipt, "영수증 올리기", "영수증 사진을 올려 두면 환불 신청에 써요"] : [I.receipt, "영수증", "영수증을 저장했어요"], [I.doc, "환불 규정", "소비자분쟁해결기준을 따라요"], [I.chat, "업장 문의", "업장 채팅은 준비 중이에요"]].map(([d, t, msg]) => (
                 <button key={t} onClick={() => ui.toast(msg)}><Icon d={d} size={22} color="#4E5968" />{t}</button>

@@ -37,7 +37,23 @@ export function Detail({ nav, ui }) {
           </div>
         ) : (
           <div className="fadein">
-            <div className="facts3">
+            <div className="pad" style={{ marginTop: 20 }}>
+              <div className="t18 b7">닫히면 내 돈은</div>
+              {shop.guard ? (
+                <div className="guard" style={{ marginTop: 8 }}>
+                  <Icon d={I.shield} size={22} color="#C2571A" />
+                  <div style={{ flex: 1 }}><b>{PROTECT[shop.protect].short}</b><span>{PROTECT[shop.protect].name} 업장</span></div>
+                </div>
+              ) : (
+                <div className="guard none" style={{ marginTop: 8 }}>
+                  <Icon d={I.shield} size={22} color="#8B95A1" />
+                  <div style={{ flex: 1 }}><b>보장 없음</b><span>3개월 이상 할부로 지킬 수 있어요</span></div>
+                </div>
+              )}
+            </div>
+
+            <div className="pad t18 b7" style={{ marginTop: 28 }}>공공데이터로 본 업장</div>
+            <div className="facts3" style={{ marginTop: 10 }}>
               <div><span>영업 상태</span><b><i className="live" />영업 중</b></div>
               <div><span>영업 기간</span><b>{shop.years}년째</b></div>
               <div><span>면적</span><b>약 {shop.pyeong}평</b></div>
@@ -56,21 +72,6 @@ export function Detail({ nav, ui }) {
                 ))}
               </div>
               <div className="t13 ter" style={{ marginTop: 12 }}>같은 크기 업장들의 기록이에요 · 이 업장이 닫는다는 뜻은 아니에요</div>
-            </div>
-
-            <div className="pad" style={{ marginTop: 26 }}>
-              <div className="t18 b7">닫히면 내 돈은</div>
-              {shop.guard ? (
-                <div className="guard" style={{ marginTop: 8 }}>
-                  <Icon d={I.shield} size={22} color="#C2571A" />
-                  <div style={{ flex: 1 }}><b>{PROTECT[shop.protect].short}</b><span>{PROTECT[shop.protect].name} 업장</span></div>
-                </div>
-              ) : (
-                <div className="guard none" style={{ marginTop: 8 }}>
-                  <Icon d={I.shield} size={22} color="#8B95A1" />
-                  <div style={{ flex: 1 }}><b>보장 없음</b><span>3개월 이상 할부로 지킬 수 있어요</span></div>
-                </div>
-              )}
             </div>
 
             <div className="pad" style={{ marginTop: 30 }}>
