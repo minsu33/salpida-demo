@@ -9,7 +9,7 @@ import { useStore } from "../lib/store.jsx";
 const PLANS = [[1, 100000], [3, 250000], [6, 400000], [12, 600000]];
 
 export function Detail({ nav, ui }) {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
   const [plan, setPlan] = useState(12);
   const [liked, setLiked] = useState(false);
   const amount = PLANS.find(([m]) => m === plan)[1];
@@ -17,6 +17,8 @@ export function Detail({ nav, ui }) {
   useEffect(() => { getShop(state.shop.id).then(setD); }, [state.shop.id]);
   const shop = d?.shop || state.shop;
   const t = TIERS[shop.tier];
+  // 매장에서 일반 결제: 살핌은 금액·기간을 모르니 업장만 등록해 지켜본다
+  const watch = () => { dispatch({ type: "register", pay: { method: "매장 결제", date: new Date().toISOString().slice(0, 10) } }); ui.toast("이 업장을 지켜볼게요"); nav.tab("pass"); };
 
   return (
     <div className="s">
@@ -100,7 +102,10 @@ export function Detail({ nav, ui }) {
           </div>
         )}
       </div>
-      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay", { amount, plan })}>{shop.protect === "escrow" ? `${man(amount)} 원 결제하기` : "이용권 등록하기"}</button></div>
+      <div className="bottom" style={{ gap: 8 }}>
+        <button className={`btn ${shop.protect === "escrow" ? "ghost" : ""} ${d ? "" : "off"}`} style={{ flex: shop.protect === "escrow" ? "0 0 38%" : 1 }} onClick={watch}>매장에서 결제</button>
+        {shop.protect === "escrow" && <button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay", { amount, plan })}>안심결제 {man(amount)} 원</button>}
+      </div>
     </div>
   );
 }

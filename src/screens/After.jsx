@@ -23,6 +23,7 @@ export function Pass({ nav, ui }) {
   const p = state.pass;
   const closed = state.alerts.some((a) => a.kind === "closed");
   const es = p?.pay?.method === "안심결제";
+  const store = p?.pay?.method === "매장 결제"; // 금액·기간을 모름
   const left = p ? won(remain(p.daysLeft, p.pay?.amount)) : "";
   return (
     <div className="s">
@@ -34,21 +35,21 @@ export function Pass({ nav, ui }) {
         ) : (
           <>
             <div className="pass">
-              <div className="row"><div className="t18 b7">{p.shop.name}</div><span className="t13" style={{ opacity: 0.6 }}>{p.pay?.plan || 12}개월권</span></div>
+              <div className="row"><div className="t18 b7">{p.shop.name}</div>{!store && <span className="t13" style={{ opacity: 0.6 }}>{p.pay?.plan || 12}개월권</span>}</div>
               <div className="pstate"><i style={{ background: closed ? "#FF8A65" : "#3DD68C" }} />{closed ? "폐업 등록됨" : "영업 중"}</div>
-              <div className="p"><i style={{ width: `${(100 * p.daysLeft) / PASS.days}%`, background: closed ? "#5B616B" : undefined }} /></div>
-              <div className="row t14" style={{ opacity: 0.8 }}>{closed ? <><span>이용 중단</span><span>{es ? `환불 ${left}` : `남은 이용료 ${left}`}</span></> : <><span>{p.daysLeft}일 남음</span><span>남은 이용료 {left}</span></>}</div>
+              {!store && <div className="p"><i style={{ width: `${(100 * p.daysLeft) / PASS.days}%`, background: closed ? "#5B616B" : undefined }} /></div>}
+              {!store && <div className="row t14" style={{ opacity: 0.8 }}>{closed ? <><span>이용 중단</span><span>{es ? `환불 ${left}` : `남은 이용료 ${left}`}</span></> : <><span>{p.daysLeft}일 남음</span><span>남은 이용료 {left}</span></>}</div>}
               <div className="pguard">
                 <Icon d={es || canObject(p.pay) || p.shop.protect === "insurance" ? I.shield : I.info} size={18} color="#fff" w={2.1} />
-                {es ? (closed ? `${left} 전액 환불 중` : "닫히면 전액 환불") : p.shop.protect === "insurance" ? "닫히면 보증보험 환급" : canObject(p.pay) ? "닫히면 할부 멈춤 가능" : "보장 없음"}
+                {es ? (closed ? `${left} 전액 환불 중` : "닫히면 전액 환불") : p.shop.protect === "insurance" ? "닫히면 보증보험 환급" : canObject(p.pay) ? "닫히면 할부 멈춤 가능" : store ? "닫히면 바로 알려요" : "보장 없음"}
               </div>
             </div>
             <div className="pad paid">
-              <span>{won(p.pay?.amount || PASS.price)} · {es ? "안심결제" : "카운터 결제"} · {p.pay?.months ? `${p.pay.months}개월 할부` : "일시불"}</span>
+              <span>{store ? "매장에서 결제 · 지켜보는 중" : `${won(p.pay?.amount || PASS.price)} · ${es ? "안심결제" : "카운터 결제"} · ${p.pay?.months ? `${p.pay.months}개월 할부` : "일시불"}`}</span>
               <span>{p.pay?.date ? md(p.pay.date) : ""}</span>
             </div>
             <div className="passact">
-              {[[I.receipt, "영수증", "영수증을 저장했어요"], [I.doc, "환불 규정", "소비자분쟁해결기준을 따라요"], [I.chat, "업장 문의", "업장 채팅은 준비 중이에요"]].map(([d, t, msg]) => (
+              {[store ? [I.receipt, "영수증 올리기", "영수증 사진을 올려 두면 환불 신청에 써요"] : [I.receipt, "영수증", "영수증을 저장했어요"], [I.doc, "환불 규정", "소비자분쟁해결기준을 따라요"], [I.chat, "업장 문의", "업장 채팅은 준비 중이에요"]].map(([d, t, msg]) => (
                 <button key={t} onClick={() => ui.toast(msg)}><Icon d={d} size={22} color="#4E5968" />{t}</button>
               ))}
             </div>
@@ -89,7 +90,7 @@ export function Alerts({ nav, ui }) {
             );
           })}
           {p && <div className="t14 ter b7" style={{ marginTop: 22 }}>지난 기록</div>}
-          {p && [[p.pay?.date ? `${+p.pay.date.slice(5, 7)}.${+p.pay.date.slice(8, 10)}` : "", "이용권 등록", `${p.pay?.plan || 12}개월권`]].map(([m, t, s]) => (
+          {p && [[p.pay?.date ? `${+p.pay.date.slice(5, 7)}.${+p.pay.date.slice(8, 10)}` : "", "이용권 등록", p.pay?.method === "매장 결제" ? "매장 결제" : `${p.pay?.plan || 12}개월권`]].map(([m, t, s]) => (
             <div className="ti" key={t}><div className="m">{m}</div><div><b>{t}</b><span>{s}</span></div></div>
           ))}
         </div>
@@ -108,14 +109,18 @@ export function Alert({ nav, ui, params }) {
   const t = ALERT_TEXT[a.kind];
   const left = won(remain(p.daysLeft, p.pay?.amount));
   const es = p.pay?.method === "안심결제";
+  const store = p.pay?.method === "매장 결제";
   const todos = a.kind === "signal" ? es ? [
     { t: "그대로 둬도 돼요", s: `닫혀도 남은 ${left} 전액 환불` },
+  ] : store ? [
+    { t: "영수증·계약서 챙기기", s: "피해구제에 필요" },
+    { t: "할부로 냈다면 안심", s: "20만 원·3개월 이상이면 멈춤 가능", act: "자세히", fn: () => ui.toast("20만 원 이상, 3개월 이상 할부면 남은 할부를 멈출 수 있어요") },
   ] : [
     { t: "남은 돈", s: `약 ${left}` },
     { t: `닫기 전에 해지하면 약 ${won(refundIfQuit(p.pay?.amount || PASS.price, PASS.days - p.daysLeft))}`, s: "위약금 10%를 뺀 금액", act: "계산 보기", fn: () => ui.toast("쓴 기간 이용료와 위약금 10%를 뺀 금액이에요") },
     { t: canObject(p.pay) ? "할부라 안심" : "영수증 챙기기", s: canObject(p.pay) ? "닫으면 할부 멈춤 가능" : "피해구제에 필요", act: "자세히", fn: () => ui.toast("20만 원 이상, 3개월 이상 할부면 남은 할부를 멈출 수 있어요") },
   ] : [
-    canObject(p.pay) && { t: "카드사에 할부 멈춤 요청", s: canObject(p.pay) ? `${p.pay.months}개월 할부 · 할부거래법` : "대상 아님 · 건너뛰기", act: "요청 문구 복사", fn: () => ui.copy(`${p.shop.name}이 폐업해 이용권을 쓸 수 없게 되어, 남은 할부금 지급 거절(항변권)을 요청합니다.`) },
+    (canObject(p.pay) || store) && { t: "카드사에 할부 멈춤 요청", s: canObject(p.pay) ? `${p.pay.months}개월 할부 · 할부거래법` : "3개월 이상 할부였다면", act: "요청 문구 복사", fn: () => ui.copy(`${p.shop.name}이 폐업해 이용권을 쓸 수 없게 되어, 남은 할부금 지급 거절(항변권)을 요청합니다.`) },
     p.shop.protect === "insurance" && { t: p.shop.protect === "insurance" ? "보증보험 환급 청구" : "보증보험 없음", s: p.shop.protect === "insurance" ? `약 ${left}` : "3번으로", act: p.shop.protect === "insurance" ? "청구 안내" : "다음", fn: () => ui.toast(p.shop.protect === "insurance" ? "OO보증보험 청구 화면으로 이어져요 (시연)" : "소비자원 피해구제로 넘어가요") },
     { t: "소비자원 피해구제 신청", s: "1372 · 영수증 준비", act: "안내 보기", fn: () => ui.toast("1372 소비자상담센터로 연결돼요 (시연)") },
   ].filter(Boolean);
