@@ -12,7 +12,7 @@ export function Pay({ nav, ui, params }) {
   const shop = state.shop;
   const escrow = shop.protect === "escrow";
   const [step, setStep] = useState(escrow ? "scan" : "form");
-  const [es, setEs] = useState(escrow);
+  const es = escrow; // 살핌 QR은 안심결제 전용. 다른 업장은 카운터에서 낸 이용권을 등록만 한다
   const [months, setMonths] = useState(6);
   const [amount, setAmount] = useState(params?.amount || PASS.price);
   useEffect(() => { if (step !== "scan") return; const t = setTimeout(() => setStep("form"), 1800); return () => clearTimeout(t); }, [step]);
@@ -34,17 +34,14 @@ export function Pay({ nav, ui, params }) {
       <div className="scroll fadein">
         <Status /><Back onBack={nav.back} />
         <div className="pad">
-          <div className="t15 sub b6">{shop.name}</div>
+          <div className="t15 sub b6">{shop.name}{es ? "" : " · 낸 이용권 등록"}</div>
           <label className="amt big"><input inputMode="numeric" value={amount ? amount.toLocaleString() : ""} placeholder="0" onChange={(e) => setAmt(e.target.value)} onFocus={(e) => e.target.select()} /><span>원</span></label>
           <div className="quick">{[300000, 600000, 1000000].map((v) => <button key={v} className={amount === v ? "on" : ""} onClick={() => setAmount(v)}>{man(v)}</button>)}</div>
         </div>
         {escrow && (
           <div className="pad" style={{ marginTop: 28 }}>
-            <div className="paykind">
-              <button className={es ? "on" : ""} onClick={() => setEs(true)}><b>안심결제</b><span>수수료 0원</span></button>
-              <button className={!es ? "on" : ""} onClick={() => setEs(false)}><b>일반 결제</b><span>업장에 전액</span></button>
-            </div>
-            {es && <Split amount={amount} />}
+            <div className="t16 b7">안심결제</div>
+            <Split amount={amount} />
           </div>
         )}
         <div className="pad" style={{ marginTop: 24 }}>
@@ -56,7 +53,7 @@ export function Pay({ nav, ui, params }) {
           <div><span>업장이 닫히면</span><b>{safe || "돌려받기 어려워요"}</b></div>
         </motion.div>
       </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? `${won(amount)} 결제하기` : "결제하고 등록하기"}</button></div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? `${won(amount)} 결제하기` : "이용권 등록하기"}</button></div>
     </div>
   );
 }

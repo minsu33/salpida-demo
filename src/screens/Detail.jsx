@@ -100,7 +100,7 @@ export function Detail({ nav, ui }) {
           </div>
         )}
       </div>
-      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay", { amount, plan })}>{man(amount)} 원 결제하기</button></div>
+      <div className="bottom"><button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay", { amount, plan })}>{shop.protect === "escrow" ? `${man(amount)} 원 결제하기` : "이용권 등록하기"}</button></div>
     </div>
   );
 }

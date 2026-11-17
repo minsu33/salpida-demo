@@ -44,7 +44,7 @@ export function Pass({ nav, ui }) {
               </div>
             </div>
             <div className="pad paid">
-              <span>{won(p.pay?.amount || PASS.price)} · {es ? "안심결제" : "일반 결제"} · {p.pay?.months ? `${p.pay.months}개월 할부` : "일시불"}</span>
+              <span>{won(p.pay?.amount || PASS.price)} · {es ? "안심결제" : "카운터 결제"} · {p.pay?.months ? `${p.pay.months}개월 할부` : "일시불"}</span>
               <span>{p.pay?.date ? md(p.pay.date) : ""}</span>
             </div>
             <div className="passact">
