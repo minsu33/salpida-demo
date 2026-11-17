@@ -13,12 +13,13 @@ export function Pay({ nav, ui, params }) {
   const escrow = shop.protect === "escrow";
   const [step, setStep] = useState(escrow ? "scan" : "form");
   const es = escrow; // 살핌 QR은 안심결제 전용. 다른 업장은 카운터에서 낸 이용권을 등록만 한다
-  const [months, setMonths] = useState(6);
+  const months = 0; // 카드 할부는 카드사 화면에서. 여기서는 이용 기간만 고른다
+  const [plan, setPlan] = useState(params?.plan || 12);
   const [amount, setAmount] = useState(params?.amount || PASS.price);
   useEffect(() => { if (step !== "scan") return; const t = setTimeout(() => setStep("form"), 1800); return () => clearTimeout(t); }, [step]);
   const setAmt = (v) => setAmount(Math.min(99999999, Number(v.replace(/\D/g, "")) || 0));
   const method = es ? "안심결제" : months ? "할부" : "일시불";
-  const pay = { method, months, amount, plan: params?.plan || 12, date: new Date().toISOString().slice(0, 10) };
+  const pay = { method, months, amount, plan, date: new Date().toISOString().slice(0, 10) };
   const safe = es ? "남은 이용료 전액 환불" : shop.protect === "insurance" ? "보증보험으로 환급" : canObject(pay) ? "남은 할부를 멈출 수 있어요" : null;
   const submit = () => { dispatch({ type: "register", pay }); ui.registered(pay); };
 
@@ -38,16 +39,16 @@ export function Pay({ nav, ui, params }) {
           <label className="amt big"><input inputMode="numeric" value={amount ? amount.toLocaleString() : ""} placeholder="0" onChange={(e) => setAmt(e.target.value)} onFocus={(e) => e.target.select()} /><span>원</span></label>
           <div className="quick">{[300000, 600000, 1000000].map((v) => <button key={v} className={amount === v ? "on" : ""} onClick={() => setAmount(v)}>{man(v)}</button>)}</div>
         </div>
+        <div className="pad" style={{ marginTop: 24 }}>
+          <div className="t16 b7">이용 기간</div>
+          <div className="pills">{[1, 3, 6, 12].map((v) => <button key={v} className={plan === v ? "on" : ""} onClick={() => setPlan(v)}>{v}개월</button>)}</div>
+        </div>
         {escrow && (
           <div className="pad" style={{ marginTop: 28 }}>
             <div className="t16 b7">안심결제</div>
-            <Split amount={amount} />
+            <Split amount={amount} plan={plan} />
           </div>
         )}
-        <div className="pad" style={{ marginTop: 24 }}>
-          <div className="row"><div className="t16 b7">할부</div>{months > 0 && amount > 0 && <span className="t14 sub">월 <b style={{ color: "var(--ink)" }}>{man(amount / months)} 원</b></span>}</div>
-          <div className="pills">{[0, 3, 6, 12].map((v) => <button key={v} className={months === v ? "on" : ""} onClick={() => setMonths(v)}>{v ? `${v}개월` : "일시불"}</button>)}</div>
-        </div>
         <motion.div key={safe || "none"} className={`ifclose ${safe ? "" : "bad"}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
           <Icon d={safe ? I.shield : I.info} size={24} color={safe ? "#C2571A" : "#8B95A1"} w={2} />
           <div><span>업장이 닫히면</span><b>{safe || "돌려받기 어려워요"}</b></div>
@@ -59,11 +60,11 @@ export function Pay({ nav, ui, params }) {
 }
 
 // 안심결제 돈 나눔: 절반은 업장에 바로, 절반은 결제대행사가 맡아 매달 보낸다
-export function Split({ amount }) {
+export function Split({ amount, plan = 12 }) {
   return (
     <div className="split2">
       <div className="sbar"><i /><i /></div>
-      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">보관 <b>{man(amount / 2)} 원</b> · 매달 {man(amount / 2 / 12)}씩</span></div>
+      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">보관 <b>{man(amount / 2)} 원</b> · 매달 {man(amount / 2 / plan)}씩</span></div>
     </div>
   );
 }
