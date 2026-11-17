@@ -53,24 +53,39 @@ function Shell() {
   const sendAlert = (kind) => {
     const id = Date.now();
     dispatch({ type: "alert", kind, id }); setPush({ kind, id });
-    later(() => setPush(null), 6500);
+    later(() => setPush(null), 15000);
   };
   // 시연용 시간 건너뛰기: 등록 → '2개월 뒤' 참고 신호(앱 안에만) → '1개월 뒤' 폐업 푸시. 한꺼번에 오지 않게 나눈다.
   // 참고 신호는 헛경보가 많아 푸시하지 않고 앱 안에만 쌓는다. 푸시는 인허가 폐업 같은 사실에만.
-  const timeSkip = () => {
-    setSkip("결제 2개월 뒤");
-    later(() => { dispatch({ type: "skip", days: 60 }); dispatch({ type: "alert", kind: "signal", id: Date.now() - 1 }); }, 700);
-    later(() => { setSkip(false); say("참고 신호가 생겼어요 · 알림에서 볼 수 있어요"); }, 1700);
-    later(() => setSkip("결제 3개월째"), 7700);
-    later(() => dispatch({ type: "skip", days: 30 }), 8400);
-    later(() => { setSkip(false); sendAlert("closed"); }, 9400);
+  // 자동으로 넘어가지 않는다. 키보드 → 를 누를 때마다 한 단계씩 (시연 영상을 찍는 사람이 속도를 정한다).
+  const stage = useRef(0);
+  const nextStep = () => {
+    if (!state.pass || skip) return;
+    if (stage.current === 0) {
+      stage.current = 1;
+      setSkip("결제 2개월 뒤");
+      later(() => { dispatch({ type: "skip", days: 60 }); dispatch({ type: "alert", kind: "signal", id: Date.now() - 1 }); }, 700);
+      later(() => { setSkip(false); say("참고 신호가 생겼어요 · 알림에서 볼 수 있어요"); }, 1700);
+    } else if (stage.current === 1) {
+      stage.current = 2;
+      setSkip("결제 3개월째");
+      later(() => dispatch({ type: "skip", days: 30 }), 700);
+      later(() => { setSkip(false); sendAlert("closed"); }, 1700);
+    }
   };
+  const nextRef = useRef(nextStep);
+  nextRef.current = nextStep;
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "ArrowRight") { e.preventDefault(); nextRef.current(); } };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const ui = {
     toast: say,
     copy: (text) => { navigator.clipboard?.writeText(text).catch(() => {}); say("문구를 복사했어요"); },
     // 토스처럼: 결제 직후 완료 화면을 잠깐 보여 주고 이용권으로
-    registered: (pay) => { clear(); setDone({ amount: pay?.amount, shop: state.shop?.name }); later(() => { setDone(null); nav.tab("pass"); }, 1600); later(timeSkip, 1600 + 2600); },
+    registered: (pay) => { clear(); setDone({ amount: pay?.amount, shop: state.shop?.name }); stage.current = 0; later(() => { setDone(null); nav.tab("pass"); }, 1600); },
     // 상태바를 빠르게 세 번 누르면 시연 메뉴가 열린다 (홈 화면 앱에서도 동작)
     secret: () => { const t = Date.now(); taps.current = [...taps.current.filter((x) => t - x < 700), t]; if (taps.current.length >= 3) { taps.current = []; setPanel(true); } },
   };
