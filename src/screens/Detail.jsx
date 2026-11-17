@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-import { TIERS, PROTECT, man } from "../data.js";
+import { TIERS, PROTECT } from "../data.js";
 import { Icon, I, Status, Back, Sk, md } from "../components.jsx";
 import { getShop } from "../lib/api.js";
 import { useStore } from "../lib/store.jsx";
 
 // 업장 상세 (결제 전): 공공데이터 사실 → 크기 비교 → 업장이 가입한 보장(따로) → 할 일, 버튼은 하단 고정
-// 업장이 안내한 이용권 가격 (시연용 예시)
-const PLANS = [[1, 100000], [3, 250000], [6, 400000], [12, 600000]];
 
 export function Detail({ nav, ui }) {
   const { state, dispatch } = useStore();
-  const [plan, setPlan] = useState(12);
   const [liked, setLiked] = useState(false);
-  const amount = PLANS.find(([m]) => m === plan)[1];
   const [d, setD] = useState(null);
   useEffect(() => { getShop(state.shop.id).then(setD); }, [state.shop.id]);
   const shop = d?.shop || state.shop;
@@ -78,17 +74,6 @@ export function Detail({ nav, ui }) {
             </div>
 
             <div className="pad" style={{ marginTop: 30 }}>
-              <div className="row"><div className="t18 b7">이용권</div><span className="t13 ter">업장 안내 가격</span></div>
-              <div className="plans">
-                {PLANS.map(([m, won]) => (
-                  <button key={m} className={plan === m ? "on" : ""} onClick={() => setPlan(m)}>
-                    <span>{m}개월</span><b>{man(won)} 원</b><em>월 {man(won / m)}</em>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="pad" style={{ marginTop: 30 }}>
               <div className="t18 b7">업장 정보</div>
               <div className="info2">
                 <div><span>주소</span><b>서울 강남구 역삼동 ○○길</b></div>
@@ -104,7 +89,7 @@ export function Detail({ nav, ui }) {
       </div>
       <div className="bottom" style={{ gap: 8 }}>
         <button className={`btn ${shop.protect === "escrow" ? "ghost" : ""} ${d ? "" : "off"}`} style={{ flex: shop.protect === "escrow" ? "0 0 38%" : 1 }} onClick={watch}>매장에서 결제</button>
-        {shop.protect === "escrow" && <button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay", { amount, plan })}>안심결제 {man(amount)} 원</button>}
+        {shop.protect === "escrow" && <button className={`btn acc-b ${d ? "" : "off"}`} style={{ flex: 1 }} onClick={() => nav.go("pay")}>안심결제로 결제</button>}
       </div>
     </div>
   );
