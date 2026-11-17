@@ -45,7 +45,7 @@ export function Pass({ nav, ui }) {
               {!store && <div className="row t14" style={{ opacity: 0.8 }}>{closed ? <><span>이용 중단</span><span>{es ? `환불 ${left}` : `남은 이용료 ${left}`}</span></> : <><span>{p.daysLeft}일 남음</span><span>남은 이용료 {left}</span></>}</div>}
               <div className="pguard">
                 <Icon d={es || canObject(p.pay) || p.shop.protect === "insurance" ? I.shield : I.info} size={18} color="#fff" w={2.1} />
-                {es ? (closed ? `${left} 전액 환불 중` : "닫히면 전액 환불") : p.shop.protect === "insurance" ? "닫히면 보증보험 환급" : canObject(p.pay) ? "닫히면 할부 멈춤 가능" : store ? "닫히면 바로 알려요" : "보장 없음"}
+                {es ? (closed ? `${left} 전액 환불 중` : "안심결제 · 닫히면 전액 환불") : p.shop.protect === "insurance" ? "닫히면 보증보험 환급" : canObject(p.pay) ? "닫히면 할부 멈춤 가능" : store ? "닫히면 바로 알려요" : "보장 없음"}
               </div>
             </div>
             <div className="pad paid">

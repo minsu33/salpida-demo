@@ -42,7 +42,7 @@ export function Detail({ nav, ui }) {
               {shop.guard ? (
                 <div className="guard" style={{ marginTop: 8 }}>
                   <Icon d={I.shield} size={22} color="#C2571A" />
-                  <div style={{ flex: 1 }}><b>{PROTECT[shop.protect].short}</b><span>{PROTECT[shop.protect].name} 업장</span></div>
+                  <div style={{ flex: 1 }}><b>{PROTECT[shop.protect].name} 업장</b><span>닫히면 {PROTECT[shop.protect].short}</span></div>
                 </div>
               ) : (
                 <div className="guard none" style={{ marginTop: 8 }}>

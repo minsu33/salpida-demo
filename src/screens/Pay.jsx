@@ -43,28 +43,27 @@ export function Pay({ nav, ui, params }) {
           <div className="t16 b7">이용 기간</div>
           <div className="pills">{[1, 3, 6, 12].map((v) => <button key={v} className={plan === v ? "on" : ""} onClick={() => setPlan(v)}>{v}개월</button>)}</div>
         </div>
-        {escrow && (
-          <div className="pad" style={{ marginTop: 28 }}>
-            <div className="t16 b7">안심결제</div>
-            <Split amount={amount} plan={plan} />
-          </div>
+        {escrow ? <Split amount={amount} plan={plan} /> : (
+          <motion.div key={safe || "none"} className={`ifclose ${safe ? "" : "bad"}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
+            <Icon d={safe ? I.shield : I.info} size={24} color={safe ? "#C2571A" : "#8B95A1"} w={2} />
+            <div><span>업장이 닫히면</span><b>{safe || "돌려받기 어려워요"}</b></div>
+          </motion.div>
         )}
-        <motion.div key={safe || "none"} className={`ifclose ${safe ? "" : "bad"}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}>
-          <Icon d={safe ? I.shield : I.info} size={24} color={safe ? "#C2571A" : "#8B95A1"} w={2} />
-          <div><span>업장이 닫히면</span><b>{safe || "돌려받기 어려워요"}</b></div>
-        </motion.div>
       </div>
-      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? `${won(amount)} 결제하기` : "이용권 등록하기"}</button></div>
+      <div className="bottom"><button className="btn acc-b" style={{ flex: 1 }} disabled={!amount} onClick={submit}>{es ? `안심결제로 ${won(amount)} 결제` : "이용권 등록하기"}</button></div>
     </div>
   );
 }
 
-// 안심결제 돈 나눔: 절반은 업장에 바로, 절반은 결제대행사가 맡아 매달 보낸다
+// 안심결제 카드: 절반은 업장에 바로, 절반은 살핌이 맡아 매달 보낸다. 닫히면 남은 돈을 돌려준다
 export function Split({ amount, plan = 12 }) {
   return (
-    <div className="split2">
+    <div className="escard">
+      <div className="eh"><Icon d={I.shield} size={22} color="#C2571A" w={2.2} /><b>안심결제</b><span>수수료 0원</span></div>
       <div className="sbar"><i /><i /></div>
-      <div className="row t13"><span>업장에 바로 <b>{man(amount / 2)} 원</b></span><span className="acc">보관 <b>{man(amount / 2)} 원</b> · 매달 {man(amount / 2 / plan)}씩</span></div>
+      <div className="er"><span>지금 업장에</span><b>{man(amount / 2)} 원</b></div>
+      <div className="er acc"><span>살핌이 보관 · 매달 {man(amount / 2 / plan)}씩 업장으로</span><b>{man(amount / 2)} 원</b></div>
+      <div className="ef"><span>업장이 닫히면</span><b>남은 이용료 전액 환불</b></div>
     </div>
   );
 }
